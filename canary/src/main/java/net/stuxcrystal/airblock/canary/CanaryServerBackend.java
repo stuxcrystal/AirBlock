@@ -31,12 +31,7 @@ public class CanaryServerBackend extends BackendHandle<Plugin, MessageReceiver> 
      */
     public CanaryServerBackend(Plugin handle) {
         super(handle);
-        this.runLater(new Runnable() {
-            @Override
-            public void run() {
-                CanaryServerBackend.this.mTID = Thread.currentThread().getId();
-            }
-        });
+        this.mTID = Thread.currentThread().getId();
     }
 
     @Override

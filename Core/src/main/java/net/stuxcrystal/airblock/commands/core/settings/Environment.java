@@ -7,6 +7,8 @@ import net.stuxcrystal.airblock.commands.arguments.split.ArgumentSplitter;
 import net.stuxcrystal.airblock.commands.arguments.split.SimpleSplit;
 import net.stuxcrystal.airblock.commands.backend.Backend;
 import net.stuxcrystal.airblock.commands.backend.BackendHandle;
+import net.stuxcrystal.airblock.commands.contrib.scheduler.Scheduler;
+import net.stuxcrystal.airblock.commands.contrib.scheduler.fallback.FallbackScheduler;
 import net.stuxcrystal.airblock.commands.core.components.ComponentManager;
 import net.stuxcrystal.airblock.commands.core.hooks.HookManager;
 import net.stuxcrystal.airblock.commands.localization.TranslationManager;
@@ -105,5 +107,15 @@ public class Environment implements CommandSettings {
      */
     public void registerComponent(Class<?> wrapper, Object interfaceCls) {
         this.getComponentManager().register(wrapper, interfaceCls);
+    }
+
+    /**
+     * Returns the scheduler of the environment.
+     * @return The scheduler of the environment.
+     */
+    public Scheduler getScheduler() {
+        if (!this.getBackend().hasComponent(Scheduler.class))
+            this.registerComponent(Backend.class, new FallbackScheduler(this));
+        return this.getBackend().getComponent(Scheduler.class);
     }
 }
