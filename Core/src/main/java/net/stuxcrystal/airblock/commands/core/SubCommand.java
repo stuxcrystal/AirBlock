@@ -5,11 +5,12 @@ import lombok.NonNull;
 import net.stuxcrystal.airblock.commands.Commands;
 import net.stuxcrystal.airblock.commands.Executor;
 import net.stuxcrystal.airblock.commands.core.list.Command;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 
 /**
- * Created by Stux on 16.11.2014.
+ * Represents a subcommand.
  */
 public class SubCommand implements Command {
 
@@ -49,7 +50,18 @@ public class SubCommand implements Command {
 
     @Override
     public void execute(@NonNull Executor executor, @NonNull String rawArguments) {
+        String[] splitter = SubCommand.splitArguments(rawArguments);
+        this.commands.execute(splitter[0], executor, splitter[1]);
+    }
+
+    public static String[] splitArguments(String rawArguments) {
+        if (StringUtils.isBlank(rawArguments))
+            return new String[] {"", ""};
+
         String[] splitter = rawArguments.split(" ", 2);
-        this.commands.execute(splitter[0], executor, splitter.length==2?splitter[1]:"");
+        if (splitter.length == 1) {
+            return new String[] {splitter[0], ""};
+        }
+        return splitter;
     }
 }

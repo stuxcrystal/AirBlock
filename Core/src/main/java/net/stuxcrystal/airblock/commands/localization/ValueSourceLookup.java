@@ -1,6 +1,6 @@
 package net.stuxcrystal.airblock.commands.localization;
 
-import net.stuxcrystal.airblock.commands.core.utils.Optional;
+import net.stuxcrystal.airblock.utils.Optional;
 import org.apache.commons.lang3.text.StrLookup;
 
 import java.util.Locale;

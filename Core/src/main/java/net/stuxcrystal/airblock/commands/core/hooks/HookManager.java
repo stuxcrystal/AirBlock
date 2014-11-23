@@ -1,7 +1,7 @@
 package net.stuxcrystal.airblock.commands.core.hooks;
 
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
-import net.stuxcrystal.airblock.commands.core.utils.ReflectionUtils;
+import net.stuxcrystal.airblock.utils.ReflectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -122,7 +122,7 @@ public class HookManager {
         if (!Hook.class.isAssignableFrom(type))
             return;
 
-        if (hooks.containsKey(type)) {
+        if (this.hooks.containsKey(type)) {
             List<HookData> hooks = new ArrayList<HookData>(this.hooks.get(type));
 
             hooks.sort(new Comparator<HookData>() {
@@ -145,5 +145,12 @@ public class HookManager {
         }
 
         this.call(type.getSuperclass(), hook);
+    }
+
+    /**
+     * Disable all existing hooks.
+     */
+    public void clear() {
+        this.hooks.clear();
     }
 }

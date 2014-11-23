@@ -4,6 +4,7 @@ import lombok.NonNull;
 import net.stuxcrystal.airblock.commands.backend.Backend;
 import net.stuxcrystal.airblock.commands.backend.BackendHandle;
 import net.stuxcrystal.airblock.commands.backend.ExecutorHandle;
+import net.stuxcrystal.airblock.commands.core.CommandImplementation;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 import org.junit.Test;
 
@@ -61,6 +62,16 @@ public class ComponentBagTest {
         @Override
         public <R> R callInMainThread(@NonNull Callable<R> callable) throws Throwable {
             return null;
+        }
+
+        @Override
+        public ExecutorHandle<Object> wrap(Object handle) {
+            return null;
+        }
+
+        @Override
+        public void registerCommand(String name, CommandImplementation implementation) {
+
         }
 
         @Override

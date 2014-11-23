@@ -1,7 +1,7 @@
 package net.stuxcrystal.airblock.commands.localization;
 
 import lombok.NonNull;
-import net.stuxcrystal.airblock.commands.core.utils.Optional;
+import net.stuxcrystal.airblock.utils.Optional;
 
 import javax.annotation.Nullable;
 

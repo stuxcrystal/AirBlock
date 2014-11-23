@@ -1,6 +1,6 @@
 package net.stuxcrystal.airblock.commands.localization.sources;
 
-import net.stuxcrystal.airblock.commands.core.utils.Optional;
+import net.stuxcrystal.airblock.utils.Optional;
 import org.junit.Test;
 
 import java.util.HashMap;

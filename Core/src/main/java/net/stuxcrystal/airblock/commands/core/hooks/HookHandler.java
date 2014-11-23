@@ -16,6 +16,16 @@ public @interface HookHandler {
     public enum Priority implements Comparable<Priority> {
 
         /**
+         * A very very low priority.
+         */
+        LOWEST,
+
+        /**
+         * A very low priority.
+         */
+        LOWER,
+
+        /**
          * Low priority.
          */
         LOW,
@@ -28,8 +38,22 @@ public @interface HookHandler {
         /**
          * The high priority.
          */
-        HIGH
+        HIGH,
 
+        /**
+         * A higher priority.
+         */
+        HIGHER,
+
+        /**
+         * The highest priority.
+         */
+        HIGHEST,
+
+        /**
+         * A priority that is primarily designed to monitor events.
+         */
+        MONITOR,
     }
 
     /**

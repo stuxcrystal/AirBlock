@@ -43,34 +43,39 @@ public final class Bootstrapper {
     private static Map<Class<?>, BootstrapperInstance> INSTANCES = new ConcurrentHashMap<Class<?>, BootstrapperInstance>();
 
     /**
-     * Bootstrap the environment.
-     * @param backendEntryPoint The internal entry-point.
-     * @param backendHandle     The internal backend-handle.
+     * Returns the data to the bootstrapper.
+     * @param instance The instance of the bootstrapper.
+     * @return The desired instance.
      */
-    public static void begin(Object backendEntryPoint, BackendHandle backendHandle) {
-        // Get the necessary data.
-        Class<?> loader = backendEntryPoint.getClass();
-        AirBlockLoader abl = loader.getAnnotation(AirBlockLoader.class);
+    private static BootstrapperInstance getData(Object instance) {
+        return Bootstrapper.INSTANCES.get(instance.getClass().getAnnotation(AirBlockLoader.class).value());
+    }
 
-        // Check if the values are valid.
-        if (Bootstrapper.INSTANCES.containsKey(abl.value()))
-            throw new IllegalStateException("The entry-point already exists.");
-        if (!EntryPoint.class.isAssignableFrom(abl.value()))
-            throw new IllegalArgumentException("Given class not an entry-point class.");
-
-        // Create the new environment factory.
-        EntryPoint ep;
+    /**
+     * Loads the entry-point.
+     * @param loader The loader that contains the entry-point.
+     * @return The entry-point.
+     */
+    private static EntryPoint loadEntryPoint(AirBlockLoader loader) {
         try {
-            ep = (EntryPoint) abl.value().newInstance();
+            return (EntryPoint) loader.value().newInstance();
         } catch (InstantiationException e) {
             throw new RuntimeException("Failed to initiate EntryPoint.", e);
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Failed to initiate EntryPoint.", e);
         }
+    }
 
+    /**
+     * Initializes the environment.
+     * @param loader  The loader.
+     * @param handle  The handle.
+     * @return The returned environment.
+     */
+    private static Environment initializeEnvironment(AirBlockLoader loader, BackendHandle handle) {
         // Update the backend handle.
-        Environment environment = new Environment(backendHandle);
-        for (ComponentList cl : abl.components()) {
+        Environment environment = new Environment(handle);
+        for (ComponentList cl : loader.components()) {
             for (Class<?> componentType : cl.components()) {
                 Object component;
                 try {
@@ -86,7 +91,7 @@ public final class Bootstrapper {
         }
 
         // Update the backend handle.
-        for (Class<?> type : abl.argumentTypes()) {
+        for (Class<?> type : loader.argumentTypes()) {
             Object parser;
             try {
                 parser = type.newInstance();
@@ -98,15 +103,35 @@ public final class Bootstrapper {
 
             environment.getArgumentConverter().registerParser((ArgumentParser) parser);
         }
+        return environment;
+    }
 
-        // Update the default environment.
+    /**
+     * Bootstrap the environment.
+     * @param backendEntryPoint The internal entry-point.
+     * @param backendHandle     The internal backend-handle.
+     */
+    public static void begin(Object backendEntryPoint, BackendHandle backendHandle) {
+        // Get the necessary data.
+        Class<?> cls = backendEntryPoint.getClass();
+        AirBlockLoader loader = cls.getAnnotation(AirBlockLoader.class);
+
+        // Check if the values are valid.
+        if (Bootstrapper.INSTANCES.containsKey(loader.value()))
+            throw new IllegalStateException("The entry-point already exists.");
+        if (!EntryPoint.class.isAssignableFrom(loader.value()))
+            throw new IllegalArgumentException("Given class not an entry-point class.");
+
+        EntryPoint entry = Bootstrapper.loadEntryPoint(loader);
+
+        // Prepare the environment.
+        Environment environment = Bootstrapper.initializeEnvironment(loader, backendHandle);
         Environment.setInstance(environment);
+        entry.initialize(environment);
+        Bootstrapper.INSTANCES.put(loader.value(), new BootstrapperInstance(entry, backendHandle));
 
-        // Register the instance.
-        Bootstrapper.INSTANCES.put(abl.value(), new BootstrapperInstance(ep, backendHandle));
-
-        // Bootstrap the values.
-        ep.start();
+        // Start the entry-point.
+        entry.start();
     }
 
     /**
@@ -114,9 +139,7 @@ public final class Bootstrapper {
      * @param backendEntryPoint The backend-entry.
      */
     public static void end(Object backendEntryPoint) {
-        BootstrapperInstance bi = Bootstrapper.INSTANCES.get(backendEntryPoint.getClass().getAnnotation(AirBlockLoader.class).value());
-        // Inform the others that we are currently shutting down.
-        bi.getHandle().getEnvironment().getHookManager().call(new ShutdownHook(bi.getHandle().getEnvironment()));
+        BootstrapperInstance bi = Bootstrapper.getData(backendEntryPoint);
         bi.getEp().stop();
         Bootstrapper.INSTANCES.remove(backendEntryPoint.getClass().getAnnotation(AirBlockLoader.class).value());
     }
@@ -126,7 +149,7 @@ public final class Bootstrapper {
      * @param backendEntryPoint The reloaded entry-point.
      */
     public static void reload(Object backendEntryPoint) {
-        EntryPoint ep = Bootstrapper.INSTANCES.get(backendEntryPoint.getClass().getAnnotation(AirBlockLoader.class).value()).getEp();
+        EntryPoint ep = Bootstrapper.getData(backendEntryPoint).getEp();
         ep.reload();
     }
 
@@ -138,7 +161,7 @@ public final class Bootstrapper {
      */
     @SuppressWarnings("unchecked")
     private static <T> ExecutorHandle<T> wrap(Object backendEntryPoint, T object) {
-        return Bootstrapper.INSTANCES.get(backendEntryPoint.getClass().getAnnotation(AirBlockLoader.class).value()).getHandle().wrap(object);
+        return Bootstrapper.getData(backendEntryPoint).getHandle().wrap(object);
     }
 
     /**
@@ -148,8 +171,10 @@ public final class Bootstrapper {
      * @param <T> The type of the handle.
      */
     public static <T> void login(Object backendEntryPoint, T handle) {
-        BootstrapperInstance bi = Bootstrapper.INSTANCES.get(backendEntryPoint.getClass().getAnnotation(AirBlockLoader.class).value());
-        bi.getHandle().getEnvironment().getHookManager().call(new PlayerLoginHook(Bootstrapper.wrap(backendEntryPoint, handle).wrap(bi.getHandle().getEnvironment())));
+        BootstrapperInstance bi = Bootstrapper.getData(backendEntryPoint);
+        bi.getHandle().getEnvironment().getHookManager().call(
+                new PlayerLoginHook(Bootstrapper.wrap(backendEntryPoint, handle).wrap(bi.getHandle().getEnvironment()))
+        );
     }
 
     /**
@@ -159,8 +184,10 @@ public final class Bootstrapper {
      * @param <T> The type of the handle.
      */
     public static <T> void logoff(Object backendEntryPoint, T handle) {
-        BootstrapperInstance bi = Bootstrapper.INSTANCES.get(backendEntryPoint.getClass().getAnnotation(AirBlockLoader.class).value());
-        bi.getHandle().getEnvironment().getHookManager().call(new PlayerLogoffHook(Bootstrapper.wrap(backendEntryPoint, handle).wrap(bi.getHandle().getEnvironment())));
+        BootstrapperInstance bi = Bootstrapper.getData(backendEntryPoint);
+        bi.getHandle().getEnvironment().getHookManager().call(
+                new PlayerLogoffHook(Bootstrapper.wrap(backendEntryPoint, handle).wrap(bi.getHandle().getEnvironment()))
+        );
     }
 
 }

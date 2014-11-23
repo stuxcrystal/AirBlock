@@ -2,6 +2,7 @@ package net.stuxcrystal.airblock.commands;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import net.stuxcrystal.airblock.commands.core.CommandImplementation;
 import net.stuxcrystal.airblock.commands.core.SubCommand;
 import net.stuxcrystal.airblock.commands.core.list.Command;
 import net.stuxcrystal.airblock.commands.core.list.CommandList;
@@ -9,16 +10,20 @@ import net.stuxcrystal.airblock.commands.core.list.CommandRegistrar;
 import net.stuxcrystal.airblock.commands.core.settings.CommandLocale;
 import net.stuxcrystal.airblock.commands.core.settings.CommandSettings;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
+import net.stuxcrystal.airblock.commands.localization.TranslationManager;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Handles the commands.
  */
 @AllArgsConstructor
-public class Commands {
+public class Commands implements CommandImplementation {
 
     /**
      * Contains all commands.
@@ -62,6 +67,16 @@ public class Commands {
         this.commands = new CommandList();
         this.children = new ArrayList<Commands>();
         this.locale = new CommandLocale(Environment.getInstance());
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Contains the settings of the current command object.
+     * @return The settings.
+     */
+    public CommandSettings getSettings() {
+        return this.locale;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,24 +133,31 @@ public class Commands {
      * @param executor  The executor of the command.
      * @param args      The arguments that have been passed to the command.
      * @return {@code true} if the command has been found and executed.
+     *         {@code null} if the command has been found but the user did not have permission.
      */
-    public boolean execute(@NonNull String command, @NonNull Executor executor, @NonNull String args) {
+    public Boolean execute(@NonNull String command, @NonNull Executor executor, @NonNull String args) {
         // Make sure we push the context of the command-system to the executor.
         executor.pushContext(this.locale);
+
+        Boolean result = false;
 
         // Try to find a suitable command that we had registered.
         if (this.commands.execute(command, executor, args))
             return true;
+        if (this.commands.getCommand(command).size() != 0)
+            result = null;
 
         // Make sure we pop it.
         executor.popContext();
 
         // Query child command handlers.
-        for (Commands child : this.children)
-            if (child.execute(command, executor, args))
+        for (Commands child : this.children) {
+            result = child.execute(command, executor, args);
+            if (result != null && result)
                 return true;
+        }
 
-        return false;
+        return result;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -171,4 +193,83 @@ public class Commands {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void execute(Executor executor, String label, String arguments) {
+        Boolean result;
+        try {
+            result = this.execute(label, executor, arguments);
+        } catch (Throwable e) {
+            this.locale.getEnvironment().getTranslationManager().translate(
+                    executor, TranslationManager.COMMAND_FAILURE, label
+            );
+            this.locale.getLogger().log(Level.SEVERE, "Failed to execute: " + label, e);
+            return;
+        }
+
+        if (result == null) {
+            // If the result is null, the user did not have permission to execute the command.
+            this.locale.getEnvironment().getTranslationManager().translate(
+                    executor, TranslationManager.COMMAND_NO_PERMISSION, label
+            );
+        } else if (!result) {
+            // Otherwise there was really no permission to execute this command.
+            this.locale.getEnvironment().getTranslationManager().translate(
+                    executor, TranslationManager.COMMAND_NOT_FOUND, label
+            );
+        }
+    }
+
+    @Override
+    public String getDescription(Executor executor, String label) {
+        List<Command> commands = this.getCommand(label);
+        for (Command command : commands) {
+            if (command.canExecute(executor, null))
+                return command.getDescription();
+        }
+
+        if (commands.size() > 0)
+            return commands.get(0).getDescription();
+        return this.locale.getEnvironment().getTranslationManager().translate(executor, "No description available");
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Registers the base commands.
+     */
+    public void registerBaseCommands() {
+        HashSet<String> registered = new HashSet<String>();
+        for (Command command : this.getCommands()) {
+            if (registered.contains(command.getName()))
+                continue;
+            registered.add(command.getName());
+            this.getSettings().getEnvironment().getBackend().getHandle().registerCommand(
+                    command.getName(),
+                    this
+            );
+        }
+    }
+
+    /**
+     * Register the given Commands-Instance as a single command.
+     * @param name The given description.
+     */
+    public void registerCommand(String name, final String description) {
+        this.getSettings().getEnvironment().getBackend().getHandle().registerCommand(
+                name,
+                new CommandImplementation() {
+                    @Override
+                    public void execute(Executor executor, String label, String arguments) {
+                        String[] parsed = SubCommand.splitArguments(arguments);
+                        Commands.this.execute(parsed[0], executor, arguments);
+                    }
+
+                    @Override
+                    public String getDescription(Executor executor, String label) {
+                        return description;
+                    }
+                }
+        );
+    }
 }

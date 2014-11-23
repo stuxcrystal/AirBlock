@@ -8,6 +8,7 @@ import net.stuxcrystal.airblock.commands.contrib.Permissions;
 import net.stuxcrystal.airblock.commands.core.list.Command;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 
 /**
@@ -61,7 +62,7 @@ public abstract class AnnotationCommand implements Command {
     }
 
     @Override
-    public boolean canExecute(@NonNull Executor executor, @NonNull String rawArguments) {
+    public boolean canExecute(@NonNull Executor executor, @Nullable String rawArguments) {
         // Check if the executor type is supported.
         boolean allowed = false;
         for (SimpleCommand.Executor type : this.getCommand().executors()) {

@@ -41,6 +41,16 @@ public class TranslationManager extends MultiValueSource {
     public static final String COMMAND_FAILURE = "An error was detected while executing the command.";
 
     /**
+     * The key that should be used when the player executes a command without permission.
+     */
+    public static final String COMMAND_NO_PERMISSION = "You don't have permission to execute this command.";
+
+    /**
+     * The key that should be used when the command has no description available.
+     */
+    public static final String NO_DESCRIPTION_AVAILABLE = "The command does not have a description.";
+
+    /**
      * Contains the translation resolver.
      */
     @Getter(AccessLevel.PUBLIC)
@@ -60,8 +70,14 @@ public class TranslationManager extends MultiValueSource {
      * Initiate the default translation values.
      */
     static {
-        TranslationManager.DEFAULT_VALUES.put(TranslationManager.COMMAND_NOT_FOUND, "The command was not found.");
-        TranslationManager.DEFAULT_VALUES.put(TranslationManager.COMMAND_FAILURE, "An error was detected while executing the command.");
+        for (String value : new String[] {
+                TranslationManager.COMMAND_FAILURE,
+                TranslationManager.COMMAND_NO_PERMISSION,
+                TranslationManager.COMMAND_NOT_FOUND,
+                TranslationManager.NO_DESCRIPTION_AVAILABLE
+        }) {
+            TranslationManager.DEFAULT_VALUES.put(value, value);
+        }
     }
 
     /**

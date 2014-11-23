@@ -1,17 +1,24 @@
 package net.stuxcrystal.airblock.canary;
 
+import com.googlecode.miyamoto.AnnotationProxyBuilder;
 import net.canarymod.Canary;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.chat.MessageReceiver;
+import net.canarymod.commandsys.CanaryCommand;
+import net.canarymod.commandsys.Command;
+import net.canarymod.commandsys.CommandDependencyException;
 import net.canarymod.plugin.Plugin;
 import net.canarymod.tasks.ServerTask;
 import net.stuxcrystal.airblock.commands.backend.BackendHandle;
 import net.stuxcrystal.airblock.commands.backend.ExecutorHandle;
+import net.stuxcrystal.airblock.commands.core.CommandImplementation;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -22,7 +29,12 @@ public class CanaryServerBackend extends BackendHandle<Plugin, MessageReceiver> 
     /**
      * Contains the thread-id of the main thread.
      */
-    private long mTID = -1;
+    private final long mTID;
+
+    /**
+     * Contains a bridge to the logger of Canary-Mod.
+     */
+    private final Logger logger;
 
     /**
      * Creates the new backendhandle.
@@ -32,6 +44,7 @@ public class CanaryServerBackend extends BackendHandle<Plugin, MessageReceiver> 
     public CanaryServerBackend(Plugin handle) {
         super(handle);
         this.mTID = Thread.currentThread().getId();
+        this.logger = JULToLog4jBridge.bridge(handle.getLogman());
     }
 
     @Override
@@ -41,7 +54,7 @@ public class CanaryServerBackend extends BackendHandle<Plugin, MessageReceiver> 
 
     @Override
     public Logger getLogger() {
-        return null;
+        return this.logger;
     }
 
     @Override
@@ -80,5 +93,41 @@ public class CanaryServerBackend extends BackendHandle<Plugin, MessageReceiver> 
     @Override
     public ExecutorHandle<MessageReceiver> wrap(MessageReceiver handle) {
         return new CanaryExecutorBackend(handle);
+    }
+
+    @Override
+    public void registerCommand(final String name, final CommandImplementation implementation) {
+        // Prep
+        AnnotationProxyBuilder<Command> command = AnnotationProxyBuilder.newBuilder(Command.class);
+        command.setProperty("aliases", new String[] {name});
+        command.setProperty("permissions", new String[0]);
+        command.setProperty("description",
+                implementation.getDescription(this.getConsole().wrap(this.getEnvironment()), name)
+        );
+        command.setProperty("tooltip",
+                implementation.getDescription(this.getConsole().wrap(this.getEnvironment()), name)
+        );
+        command.setProperty("version", 2);
+
+        // Start
+        try {
+            // Register the command.
+            Canary.commands().registerCommand(
+                    new CanaryCommand(command.getProxedAnnotation(), this.getHandle(), null) {
+                        @Override
+                        protected void execute(MessageReceiver caller, String[] parameters) {
+                            implementation.execute(
+                                    new CanaryExecutorBackend(caller).wrap(CanaryServerBackend.this.getEnvironment()),
+                                    name,
+                                    StringUtils.join(parameters, " ")
+                            );
+                        }
+                    },
+                    this.getHandle(),
+                    false
+            );
+        } catch (CommandDependencyException e) {
+            this.getLogger().log(Level.WARNING, "Failed to register command", e);
+        }
     }
 }

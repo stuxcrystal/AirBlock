@@ -3,7 +3,7 @@ package net.stuxcrystal.airblock.commands.contrib.annotations;
 import lombok.NonNull;
 import net.stuxcrystal.airblock.commands.Executor;
 import net.stuxcrystal.airblock.commands.arguments.list.ArgumentList;
-import net.stuxcrystal.airblock.commands.core.utils.ReflectionUtils;
+import net.stuxcrystal.airblock.utils.ReflectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.logging.Level;

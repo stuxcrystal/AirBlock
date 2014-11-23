@@ -32,7 +32,7 @@ public interface Command {
      * @param rawArguments  The raw arguments as a single string.
      * @return If the command can be executed by the executor.
      */
-    public boolean canExecute(@NonNull Executor executor, @NonNull String rawArguments);
+    public boolean canExecute(@NonNull Executor executor, @Nullable String rawArguments);
 
     /**
      * Executes the command.

@@ -1,4 +1,4 @@
-package net.stuxcrystal.airblock.commands.core.utils;
+package net.stuxcrystal.airblock.utils;
 
 import lombok.NonNull;
 

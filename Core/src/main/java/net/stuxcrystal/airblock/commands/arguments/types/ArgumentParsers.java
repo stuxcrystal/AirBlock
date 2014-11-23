@@ -3,7 +3,7 @@ package net.stuxcrystal.airblock.commands.arguments.types;
 import net.stuxcrystal.airblock.commands.Executor;
 import net.stuxcrystal.airblock.commands.arguments.ArgumentConverter;
 import net.stuxcrystal.airblock.commands.arguments.ArgumentParser;
-import net.stuxcrystal.airblock.commands.core.utils.ReflectionUtils;
+import net.stuxcrystal.airblock.utils.ReflectionUtils;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Array;

@@ -30,6 +30,11 @@
             <artifactId>core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.googlecode.miyamoto</groupId>
+            <artifactId>miyamoto</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -42,6 +47,38 @@
                     <source>1.6</source>
                     <target>1.6</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <relocations>
+                                <!-- Relocate everything that is not provided in the CanaryMod runtime. -->
+                                <!-- Since this libaray is designed to be shaded into a plugin, -->
+                                <!-- We will relocate all dependencies not provided by CanaryMod to the given plugin. -->
+                                <relocation>
+                                    <pattern>javax.annotation</pattern>
+                                    <shadedPattern>net.stuxcrystal.airblock.libs.javax.annotation</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.commons.lang3</pattern>
+                                    <shadedPattern>net.stuxcrystal.airblock.libs.org.apache.commons.lang3</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.googlecode.miyamoto</pattern>
+                                    <shadedPattern>net.stuxcrystal.airblock.libs.com.googlecode.miyamoto</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

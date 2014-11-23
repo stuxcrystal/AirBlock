@@ -1,6 +1,7 @@
 package net.stuxcrystal.airblock.commands.backend;
 
 import lombok.NonNull;
+import net.stuxcrystal.airblock.commands.core.CommandImplementation;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 
 import java.util.concurrent.Callable;
@@ -87,4 +88,11 @@ public abstract class BackendHandle<T, E> extends Handle<T> {
     public Environment getEnvironment() {
         return this.environment;
     }
+
+    /**
+     * Registers the given command under the given name.
+     * @param name             The name of the command.
+     * @param implementation   The implementation of the command.
+     */
+    public abstract void registerCommand(String name, CommandImplementation implementation);
 }

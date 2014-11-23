@@ -1,7 +1,7 @@
 package net.stuxcrystal.airblock.commands.core.components;
 
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
-import net.stuxcrystal.airblock.commands.core.utils.ReflectionUtils;
+import net.stuxcrystal.airblock.utils.ReflectionUtils;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Method;
