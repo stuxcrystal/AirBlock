@@ -66,6 +66,13 @@ public abstract class BackendHandle<T, E> extends Handle<T> {
     public abstract <R> R callInMainThread(@NonNull Callable<R> callable) throws Throwable;
 
     /**
+     * Wraps the given executor.
+     * @param handle The executor.
+     * @return The wrapper.
+     */
+    public abstract ExecutorHandle<E> wrap(E handle);
+
+    /**
      * Sets the environment.
      * @param environment The environment.
      */

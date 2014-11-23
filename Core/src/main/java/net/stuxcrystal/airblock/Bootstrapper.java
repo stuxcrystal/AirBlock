@@ -1,9 +1,17 @@
 package net.stuxcrystal.airblock;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import net.stuxcrystal.airblock.annotations.AirBlockLoader;
 import net.stuxcrystal.airblock.annotations.ComponentList;
 import net.stuxcrystal.airblock.commands.arguments.ArgumentParser;
 import net.stuxcrystal.airblock.commands.backend.BackendHandle;
+import net.stuxcrystal.airblock.commands.backend.ExecutorHandle;
+import net.stuxcrystal.airblock.commands.core.hooks.Hook;
+import net.stuxcrystal.airblock.commands.core.hooks.predefined.PlayerLoginHook;
+import net.stuxcrystal.airblock.commands.core.hooks.predefined.PlayerLogoffHook;
+import net.stuxcrystal.airblock.commands.core.hooks.predefined.ShutdownHook;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 
 import java.util.Map;
@@ -15,9 +23,24 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class Bootstrapper {
 
     /**
+     * Contains the data for the bootstrapper.
+     */
+    @AllArgsConstructor
+    private static class BootstrapperInstance {
+
+        @Getter
+        @Setter
+        private EntryPoint ep;
+
+        @Getter
+        @Setter
+        private BackendHandle handle;
+    }
+
+    /**
      * Contains all instances of the bootstrapped classes.
      */
-    private static Map<Class<?>, EntryPoint> INSTANCES = new ConcurrentHashMap<Class<?>, EntryPoint>();
+    private static Map<Class<?>, BootstrapperInstance> INSTANCES = new ConcurrentHashMap<Class<?>, BootstrapperInstance>();
 
     /**
      * Bootstrap the environment.
@@ -80,7 +103,7 @@ public final class Bootstrapper {
         Environment.setInstance(environment);
 
         // Register the instance.
-        Bootstrapper.INSTANCES.put(abl.value(), ep);
+        Bootstrapper.INSTANCES.put(abl.value(), new BootstrapperInstance(ep, backendHandle));
 
         // Bootstrap the values.
         ep.start();
@@ -91,8 +114,10 @@ public final class Bootstrapper {
      * @param backendEntryPoint The backend-entry.
      */
     public static void end(Object backendEntryPoint) {
-        EntryPoint ep = Bootstrapper.INSTANCES.get(backendEntryPoint.getClass().getAnnotation(AirBlockLoader.class).value());
-        ep.stop();
+        BootstrapperInstance bi = Bootstrapper.INSTANCES.get(backendEntryPoint.getClass().getAnnotation(AirBlockLoader.class).value());
+        // Inform the others that we are currently shutting down.
+        bi.getHandle().getEnvironment().getHookManager().call(new ShutdownHook(bi.getHandle().getEnvironment()));
+        bi.getEp().stop();
         Bootstrapper.INSTANCES.remove(backendEntryPoint.getClass().getAnnotation(AirBlockLoader.class).value());
     }
 
@@ -101,8 +126,41 @@ public final class Bootstrapper {
      * @param backendEntryPoint The reloaded entry-point.
      */
     public static void reload(Object backendEntryPoint) {
-        EntryPoint ep = Bootstrapper.INSTANCES.get(backendEntryPoint.getClass().getAnnotation(AirBlockLoader.class).value());
+        EntryPoint ep = Bootstrapper.INSTANCES.get(backendEntryPoint.getClass().getAnnotation(AirBlockLoader.class).value()).getEp();
         ep.reload();
+    }
+
+    /**
+     * Wraps the data.
+     * @param object The object.
+     * @param <T>    The type of the wrapped player.
+     * @return The handle.
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> ExecutorHandle<T> wrap(Object backendEntryPoint, T object) {
+        return Bootstrapper.INSTANCES.get(backendEntryPoint.getClass().getAnnotation(AirBlockLoader.class).value()).getHandle().wrap(object);
+    }
+
+    /**
+     * Called when a user is logging in.
+     * @param backendEntryPoint  The backend.
+     * @param handle             The handle.
+     * @param <T> The type of the handle.
+     */
+    public static <T> void login(Object backendEntryPoint, T handle) {
+        BootstrapperInstance bi = Bootstrapper.INSTANCES.get(backendEntryPoint.getClass().getAnnotation(AirBlockLoader.class).value());
+        bi.getHandle().getEnvironment().getHookManager().call(new PlayerLoginHook(Bootstrapper.wrap(backendEntryPoint, handle).wrap(bi.getHandle().getEnvironment())));
+    }
+
+    /**
+     * Called when a user is logging in.
+     * @param backendEntryPoint  The backend.
+     * @param handle             The handle.
+     * @param <T> The type of the handle.
+     */
+    public static <T> void logoff(Object backendEntryPoint, T handle) {
+        BootstrapperInstance bi = Bootstrapper.INSTANCES.get(backendEntryPoint.getClass().getAnnotation(AirBlockLoader.class).value());
+        bi.getHandle().getEnvironment().getHookManager().call(new PlayerLogoffHook(Bootstrapper.wrap(backendEntryPoint, handle).wrap(bi.getHandle().getEnvironment())));
     }
 
 }
