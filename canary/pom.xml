@@ -42,6 +42,7 @@
             <groupId>net.canarymod</groupId>
             <artifactId>CanaryLib</artifactId>
             <version>1.1.2</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.stuxcrystal.airblock</groupId>
