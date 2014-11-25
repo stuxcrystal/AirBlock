@@ -55,4 +55,12 @@ public abstract class HandleWrapper<T extends Handle> {
     public boolean hasComponent(Class<?> component) {
         return this.getEnvironment().getComponentManager().isImplemented(component, this);
     }
+
+    /**
+     * Adds a component to the wrapper type.
+     * @param instance The instance that should be implemented.
+     */
+    public void addComponent(Object instance) {
+        this.getEnvironment().getComponentManager().register(this.getClass(), instance);
+    }
 }
