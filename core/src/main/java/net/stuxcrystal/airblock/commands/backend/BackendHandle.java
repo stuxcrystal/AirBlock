@@ -22,6 +22,7 @@ import lombok.NonNull;
 import net.stuxcrystal.airblock.commands.core.CommandImplementation;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
@@ -113,4 +114,13 @@ public abstract class BackendHandle<T, E> extends Handle<T> {
      * @param implementation   The implementation of the command.
      */
     public abstract void registerCommand(String name, CommandImplementation implementation);
+
+    /**
+     * Always return null.
+     * @return {@code null}.
+     */
+    @Override
+    public final UUID getUniqueIdentifier() {
+        return null;
+    }
 }

@@ -25,16 +25,23 @@ import net.stuxcrystal.airblock.commands.contrib.Permissions;
 import net.stuxcrystal.airblock.commands.contrib.locales.LocaleResolver;
 import net.stuxcrystal.airblock.commands.core.components.Component;
 
+import javax.annotation.Nullable;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Locale;
+import java.util.UUID;
 
 /**
  * The basic executor backend.
  */
 public class CanaryExecutorBackend extends ExecutorHandle<MessageReceiver>
     implements Permissions, LocaleResolver {
+
+    /**
+     * The UUID that is for the console.
+     */
+    private static final UUID CONSOLE_UUID = UUID.randomUUID();
 
     /**
      * The basic handle of the executor.
@@ -91,5 +98,13 @@ public class CanaryExecutorBackend extends ExecutorHandle<MessageReceiver>
         if (this.isConsole())
             return Locale.getDefault();
         return Locale.forLanguageTag(((Player)this.getHandle()).getLocale());
+    }
+
+    @Nullable
+    @Override
+    public UUID getUniqueIdentifier() {
+        if (this.isConsole())
+            return CanaryExecutorBackend.CONSOLE_UUID;
+        return ((Player)this.getHandle()).getUUID();
     }
 }

@@ -19,6 +19,10 @@
 package net.stuxcrystal.airblock.commands.backend;
 
 import lombok.*;
+import org.apache.commons.lang3.ObjectUtils;
+
+import javax.annotation.Nullable;
+import java.util.UUID;
 
 /**
  * <p>Defines a handle that wraps an object of the underlying backend.</p
@@ -28,7 +32,6 @@ import lombok.*;
  * @param <T> The type of the backend.
  */
 @ToString
-@EqualsAndHashCode
 @RequiredArgsConstructor
 public abstract class Handle<T> {
 
@@ -38,5 +41,47 @@ public abstract class Handle<T> {
     @NonNull
     @Getter
     private final T handle;
+
+    /**
+     * <p>Returns a unique identifier that is used on all handles to check if they are
+     * essentially the same.</p>
+     *
+     * <p>
+     *     The UUID is not necessarily the same for same wrapped object in each run of the
+     *     application. It should be the same for the same wrapped object in each run of the
+     *     application.
+     * </p>
+     *
+     * <p>
+     *     If this function returns {@code null} it won't make sense to use the function.
+     * </p>
+     * @return The unique identifier.
+     */
+    @Nullable
+    public abstract UUID getUniqueIdentifier();
+
+    @Override
+    public final boolean equals(Object other) {
+        // Forcibly ensure that other is never null.
+        if (other == null)
+            return false;
+
+        // Make sure that we have the same type.
+        if (!this.getClass().equals(other.getClass()))
+            return false;
+
+        UUID thisUUID = this.getUniqueIdentifier();
+        // If this identifier is null, check that
+        if (thisUUID == null) {
+            // Make sure the other handle is not identifiable.
+            if (((Handle) other).getUniqueIdentifier() != null)
+                return false;
+
+            // Just check if the handles are equal.
+            return this.getHandle().equals(((Handle) other).getHandle());
+        }
+        // If the UUID is the same, you can probably assume that the object are equal.
+        return thisUUID.equals(((Handle) other).getUniqueIdentifier());
+    }
 
 }

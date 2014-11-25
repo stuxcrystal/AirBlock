@@ -18,15 +18,14 @@
 
 package net.stuxcrystal.airblock.commands.backend;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 
 /**
  * The wrapper for the handle.
  */
+@ToString
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public abstract class HandleWrapper<T extends Handle> {
 

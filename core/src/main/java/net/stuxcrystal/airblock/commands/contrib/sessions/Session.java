@@ -18,9 +18,13 @@
 
 package net.stuxcrystal.airblock.commands.contrib.sessions;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
 import net.stuxcrystal.airblock.commands.Executor;
 import net.stuxcrystal.airblock.commands.backend.ExecutorHandle;
 import net.stuxcrystal.airblock.commands.core.settings.CommandSettings;
+import net.stuxcrystal.airblock.commands.core.settings.Environment;
 
 /**
  * Represents a session.<p />
@@ -31,14 +35,11 @@ import net.stuxcrystal.airblock.commands.core.settings.CommandSettings;
 public abstract class Session {
 
     /**
-     * The command-handler this session belongs to.
+     * Contains the environment of the session
      */
-    private CommandSettings settings;
-
-    /**
-     * The name of the user.
-     */
-    private String name;
+    @NonNull
+    @Getter(AccessLevel.PUBLIC)
+    private Environment environment;
 
     /**
      * The last time of access.
@@ -63,11 +64,9 @@ public abstract class Session {
 
     /**
      * Initializes the Session-Object.
-     * @param executor The current session-object.
      */
-    final void initialize(CommandSettings settings, ExecutorHandle executor) {
-        this.settings = settings;
-        this.name = !executor.isConsole()?executor.getName():null;
+    final void initialize(@NonNull Environment environment) {
+        this.environment = environment;
         this.updateAccessTime();
     }
 
@@ -106,13 +105,6 @@ public abstract class Session {
         boolean expired = System.currentTimeMillis() - this.lastAccessTime > this.expireTime;
         if (expired) this.isExpired = true;
         return expired;
-    }
-
-    /**
-     * @return Returns the CommandExecutor this session belongs to.
-     */
-    public Executor getExecutor() {
-        return this.settings.getEnvironment().getBackend().getExecutorExact(name);
     }
 
     /**

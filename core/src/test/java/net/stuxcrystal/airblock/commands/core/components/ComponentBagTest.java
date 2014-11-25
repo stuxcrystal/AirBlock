@@ -22,10 +22,13 @@ import lombok.NonNull;
 import net.stuxcrystal.airblock.commands.backend.Backend;
 import net.stuxcrystal.airblock.commands.backend.BackendHandle;
 import net.stuxcrystal.airblock.commands.backend.ExecutorHandle;
+import net.stuxcrystal.airblock.commands.backend.Handle;
 import net.stuxcrystal.airblock.commands.core.CommandImplementation;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 import org.junit.Test;
 
+import javax.annotation.Nullable;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
@@ -43,8 +46,8 @@ public class ComponentBagTest {
     @Components(TestInterface.class)
     public static class ComponentResolverTest {
         int called = 0;
-        BackendHandle<?, ?> handle = null;
-        public void something(BackendHandle<?, ?> handle) {
+        Handle<?> handle = null;
+        public void something(Handle<?> handle) {
             this.called++;
             this.handle = handle;
         }
@@ -156,7 +159,7 @@ public class ComponentBagTest {
 
     @Test
     public void testCallExternal() throws Exception {
-        BackendHandle handle = mock(BackendHandle.class);
+        BackendHandle handle = this.createHandle();
         ComponentBag holder = new ComponentBag();
         ComponentResolverTest crt = new ComponentResolverTest();
         holder.registerComponent(crt);
@@ -181,7 +184,7 @@ public class ComponentBagTest {
         ComponentResolverTest crt = new ComponentResolverTest();
         holder.registerComponent(crt);
         assertEquals(
-                ComponentResolverTest.class.getMethod("something", BackendHandle.class),
+                ComponentResolverTest.class.getMethod("something", Handle.class),
                 holder.getMethod(ComponentResolverTest.class, TestInterface.class.getDeclaredMethod("something"), handle)
         );
     }
@@ -191,5 +194,9 @@ public class ComponentBagTest {
         when(env.getEnvironment()).thenReturn(env);
         when(env.getBackend()).thenReturn(new Backend(handle, env));
         return env;
+    }
+
+    private BackendHandle createHandle() {
+        return new FakeBackendHandle(new Object());
     }
 }
