@@ -35,7 +35,7 @@ public @interface ComponentList {
      * Contains the component type that should be attached.
      * @return The component type that should be attached.
      */
-    public Class<? extends Handle<?>> type();
+    public Class<?> type();
 
     /**
      * Contains the component instances that should be registered.
