@@ -160,19 +160,22 @@ public class Commands implements CommandImplementation {
         Boolean result = false;
 
         // Try to find a suitable command that we had registered.
-        if (this.commands.execute(command, executor, args))
-            return true;
+        if (this.commands.execute(command, executor, args)) {
+            result = true;
+        }
         if (this.commands.getCommand(command).size() != 0)
             result = null;
 
         // Make sure we pop it.
         executor.popContext();
 
-        // Query child command handlers.
-        for (Commands child : this.children) {
-            result = child.execute(command, executor, args);
-            if (result != null && result)
-                return true;
+        if (result != null && result) {
+            // Query child command handlers.
+            for (Commands child : this.children) {
+                result = child.execute(command, executor, args);
+                if (result != null && result)
+                    return true;
+            }
         }
 
         return result;
