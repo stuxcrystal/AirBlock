@@ -143,10 +143,10 @@ public class HookManager {
         if (this.hooks.containsKey(type)) {
             List<HookData> hooks = new ArrayList<HookData>(this.hooks.get(type));
 
-            hooks.sort(new Comparator<HookData>() {
+            Collections.sort(hooks, new Comparator<HookData>() {
                 @Override
                 public int compare(HookData o1, HookData o2) {
-                    return ((Integer)o1.handler.priority().ordinal()).compareTo(o2.handler.priority().ordinal());
+                    return ((Integer) o1.handler.priority().ordinal()).compareTo(o2.handler.priority().ordinal());
                 }
             });
             Collections.reverse(hooks);

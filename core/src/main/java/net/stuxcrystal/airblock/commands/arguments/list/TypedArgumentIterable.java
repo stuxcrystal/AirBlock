@@ -18,6 +18,8 @@
 
 package net.stuxcrystal.airblock.commands.arguments.list;
 
+import java.lang.reflect.Type;
+
 /**
  * Implements a typed argument iterable.
  */
@@ -29,7 +31,7 @@ class TypedArgumentIterable<T> extends ArgumentIterable<T> {
      * @param parent The parent iterable.
      * @param type   The type of the iterable.
      */
-    public TypedArgumentIterable(ArgumentContainer parent, Class<T> type) {
+    public TypedArgumentIterable(ArgumentContainer parent, Type type) {
         super(parent, type);
     }
 

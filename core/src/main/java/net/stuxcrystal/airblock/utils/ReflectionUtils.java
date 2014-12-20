@@ -85,4 +85,21 @@ public class ReflectionUtils {
             throw e.getTargetException();
         }
     }
+
+    /**
+     * Returns the generic type argument.
+     *
+     * @param type  The type to parse.
+     * @return The generic arguments.
+     */
+    public static Type[] getGenericArguments(Type type) {
+        if (type instanceof GenericArrayType) {
+            return getGenericArguments(((GenericArrayType) type).getGenericComponentType());
+        } else if (type instanceof ParameterizedType) {
+            ParameterizedType parameters = (ParameterizedType) type;
+            return parameters.getActualTypeArguments();
+        } else {
+            return new Class<?>[0];
+        }
+    }
 }

@@ -18,6 +18,7 @@
 
 package net.stuxcrystal.airblock.commands.arguments.list;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public abstract class ArgumentContainer extends ArgumentIterable<String> {
      * @throws IllegalArgumentException       The given type is not supported.
      * @throws ArrayIndexOutOfBoundsException If the index is invalid.
      */
-    public abstract <E> E get(int index, Class<? extends E> cls) throws NumberFormatException;
+    public abstract <E> E get(int index, Type cls) throws NumberFormatException;
 
     /**
      * <p>Returns the converted argument at the given index.</p>
@@ -94,9 +95,9 @@ public abstract class ArgumentContainer extends ArgumentIterable<String> {
      * @param <T>  The type of the argument.
      * @return The argument.
      */
-    public <T> List<T> getArguments(Class<T> type) {
+    public <T> List<T> getArguments(Type type) {
         List<T> result = new ArrayList<T>();
-        for (T arg : this.as(type))
+        for (T arg : this.<T>as(type))
             result.add(arg);
         return result;
     }
@@ -108,7 +109,7 @@ public abstract class ArgumentContainer extends ArgumentIterable<String> {
      * @return An iterable that returns the iterable that returns the arguments at the given value.
      */
     @SuppressWarnings("unchecked")
-    public <T> ArgumentIterable<T> as(Class<T> cls) {
+    public <T> ArgumentIterable<T> as(Type cls) {
         return new TypedArgumentIterable<T>(this, cls);
     }
 

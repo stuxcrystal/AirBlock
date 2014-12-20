@@ -23,51 +23,41 @@ import lombok.Getter;
 import lombok.NonNull;
 import net.stuxcrystal.airblock.commands.Executor;
 import net.stuxcrystal.airblock.commands.contrib.Permissions;
-import net.stuxcrystal.airblock.commands.core.list.Command;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The basic implementation of commands.
  */
-public abstract class AnnotationCommand implements Command {
+public class AnnotationCommand implements net.stuxcrystal.airblock.commands.core.list.Command {
 
     /**
      * Contains the command metadata.
      */
     @Getter(AccessLevel.PROTECTED)
-    private final SimpleCommand command;
+    private final Command command;
 
-    /**
-     * Contains the method that should be called.
-     */
     @Getter(AccessLevel.PROTECTED)
-    private final Method method;
-
-    /**
-     * Contains the instance of the command.
-     */
-    @Getter(AccessLevel.PROTECTED)
-    private final Object instance;
+    private final CommandCallingStrategy implementation;
 
     /**
      * Creates a new annotation command.
      * @param command  The new command.
-     * @param method   The method.
-     * @param instance The instance that is used for the commands.
+     * @param strategy How should the command be called.
      */
-    public AnnotationCommand(SimpleCommand command, Method method, Object instance) {
+    public AnnotationCommand(Command command, CommandCallingStrategy strategy) {
         this.command = command;
-        this.method = method;
-        this.instance = instance;
+        this.implementation = strategy;
     }
 
     @Override
     public String getName() {
         if (this.getCommand().value().equals(" "))
-            return this.method.getName();
+            return this.implementation.getName();
         return this.getCommand().value();
     }
 
@@ -83,7 +73,7 @@ public abstract class AnnotationCommand implements Command {
     public boolean canExecute(@NonNull Executor executor, @Nullable String rawArguments) {
         // Check if the executor type is supported.
         boolean allowed = false;
-        for (SimpleCommand.Executor type : this.getCommand().executors()) {
+        for (Command.Executor type : this.getCommand().executors()) {
             if (type.isSupported(executor)) {
                 allowed = true;
                 break;
@@ -106,5 +96,33 @@ public abstract class AnnotationCommand implements Command {
         return true;
     }
 
-    public abstract void executeNow(@NonNull Executor executor, @NonNull String rawArguments);
+    /**
+     * Executes the command.
+     *
+     * @param executor     The executor that executes the command.
+     * @param rawArguments The arguments as a single string.
+     */
+    @Override
+    public void execute(@NonNull Executor executor, @NonNull String rawArguments) {
+        if (this.getCommand().async()) {
+            executor.getEnvironment().getBackend().runAsynchronously(new CommandRunner(this, executor, rawArguments));
+        } else {
+            this.executeNow(executor, rawArguments);
+        }
+    }
+
+    public void executeNow(@NonNull Executor executor, @NonNull String rawArguments) {
+        this.getImplementation().call(this, executor, rawArguments);
+    }
+
+    public static void throwError(String message, Throwable throwable, Executor executor) {
+        Logger logger = executor.getEnvironment().getBackend().getLogger();
+
+        if (logger != null) {
+            logger.log(Level.SEVERE, message, throwable);
+        } else {
+            System.err.println(message);
+            throwable.printStackTrace();
+        }
+    }
 }

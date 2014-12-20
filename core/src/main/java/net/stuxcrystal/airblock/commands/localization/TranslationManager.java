@@ -162,7 +162,7 @@ public class TranslationManager extends MultiValueSource {
     @NonNull
     public static LocaleResolver getResolver(@NonNull Executor executor) {
         if (!executor.hasComponent(LocaleResolver.class))
-            executor.getEnvironment().getComponentManager().register(ExecutorHandle.class, new SystemDefaultLocaleResolver());
+            executor.addComponent(new SystemDefaultLocaleResolver());
         return executor.getComponent(LocaleResolver.class);
     }
 

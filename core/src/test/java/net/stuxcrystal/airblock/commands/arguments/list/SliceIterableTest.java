@@ -19,10 +19,13 @@
 package net.stuxcrystal.airblock.commands.arguments.list;
 
 import net.stuxcrystal.airblock.commands.Executor;
+import net.stuxcrystal.airblock.utils.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.theories.Theories;
 import org.junit.runner.RunWith;
+
+import java.lang.reflect.Type;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -44,8 +47,8 @@ public class SliceIterableTest {
 
         @Override
         @SuppressWarnings("unchecked")
-        public <E> E get(int index, Class<? extends E> cls) {
-            if (String.class.equals(cls))
+        public <E> E get(int index, Type cls) {
+            if (String.class.equals(ReflectionUtils.toClass(cls)))
                 return (E)this.values[this.getRealIndex(index)];
             return null;
         }

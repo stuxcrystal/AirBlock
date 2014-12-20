@@ -18,6 +18,9 @@
 
 package net.stuxcrystal.airblock.commands.arguments.list;
 
+import net.stuxcrystal.airblock.utils.ReflectionUtils;
+
+import java.lang.reflect.Type;
 import java.util.AbstractList;
 import java.util.List;
 
@@ -35,14 +38,14 @@ public abstract class ArgumentIterable<T> extends AbstractList<T> {
     /**
      * The type of the iterable.
      */
-    protected final Class<T> type;
+    protected final Type type;
 
     /**
      * Creates a new abstract argument iterable.
      * @param parent The parent iterable.
      * @param type   The type of the iterable.
      */
-    public ArgumentIterable(ArgumentContainer parent, Class<T> type) {
+    public ArgumentIterable(ArgumentContainer parent, Type type) {
         this.parent = parent;
         this.type = type;
     }
@@ -59,7 +62,7 @@ public abstract class ArgumentIterable<T> extends AbstractList<T> {
      * @return All arguments as raw strings.
      */
     public List<T> copy() {
-        return this.getParent().getArguments(type);
+        return this.getParent().getArguments(ReflectionUtils.toClass(type));
     }
 
     /**

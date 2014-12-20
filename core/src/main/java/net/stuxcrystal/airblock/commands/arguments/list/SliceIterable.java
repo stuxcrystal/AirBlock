@@ -18,6 +18,8 @@
 
 package net.stuxcrystal.airblock.commands.arguments.list;
 
+import java.lang.reflect.Type;
+
 /**
  * Returns the iterable at the given item.
  */
@@ -122,7 +124,7 @@ class SliceIterable extends ArgumentContainer {
     }
 
     @Override
-    public <T> T get(int index, Class<? extends T> cls) {
+    public <T> T get(int index, Type cls) {
         int rindex = this.getRealIndex(index);
         if (rindex == -1)
             throw new IndexOutOfBoundsException(this.outOfBoundsMsg(index));

@@ -18,7 +18,10 @@
 
 package net.stuxcrystal.airblock.commands.contrib.annotations;
 
+import net.stuxcrystal.airblock.commands.contrib.annotations.injections.InjectingMethodCallingStrategy;
+
 import java.lang.annotation.*;
+import java.lang.reflect.Method;
 
 /**
  * Contains the command.
@@ -26,13 +29,12 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface SimpleCommand {
+public @interface Command {
 
     /**
      * Contains the supported executors for this command.
      */
-    public static enum Executor
-    {
+    public static enum Executor {
         /**
          * If this executor is in the supported executor list,
          * the console is allowed to use this command.
@@ -63,6 +65,68 @@ public @interface SimpleCommand {
          * @return If the user
          */
         public abstract boolean isSupported(net.stuxcrystal.airblock.commands.Executor executor);
+    }
+
+    /**
+     * How should the
+     */
+    public static enum Strategy {
+
+        /**
+         * This strategy does not parse the passed arguments in any way.
+         */
+        RAW {
+            /**
+             * Generates the calling strategy for air-block.
+             *
+             * @param method   The method.
+             * @param instance The instance.
+             * @return The strategy.
+             */
+            @Override
+            public CommandCallingStrategy getStrategy(Method method, Object instance) {
+                return new RawMethodCallingStrategy(method, instance);
+            }
+        },
+
+        DEFAULT {
+            /**
+             * Generates the calling strategy for air-block.
+             *
+             * @param method   The method.
+             * @param instance The instance.
+             * @return The strategy.
+             */
+            @Override
+            public CommandCallingStrategy getStrategy(Method method, Object instance) {
+                return new DirectMethodCallingStrategy(method, instance);
+            }
+        },
+
+        INJECTION {
+            /**
+             * Generates the calling strategy for air-block.
+             *
+             * @param method   The method.
+             * @param instance The instance.
+             * @return The strategy.
+             */
+            @Override
+            public CommandCallingStrategy getStrategy(Method method, Object instance) {
+                return new InjectingMethodCallingStrategy(method, instance);
+            }
+        }
+
+        ;
+
+        /**
+         * Generates the calling strategy for air-block.
+         * @param method    The method.
+         * @param instance  The instance.
+         * @return The strategy.
+         */
+        public abstract CommandCallingStrategy getStrategy(Method method, Object instance);
+
     }
 
     /**
@@ -107,4 +171,6 @@ public @interface SimpleCommand {
      * @return {@code true} if flags should be supported.
      */
     public boolean useFlags() default true;
+
+    public Strategy strategy() default Strategy.DEFAULT;
 }

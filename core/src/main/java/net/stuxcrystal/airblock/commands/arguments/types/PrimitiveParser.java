@@ -21,6 +21,7 @@ package net.stuxcrystal.airblock.commands.arguments.types;
 import net.stuxcrystal.airblock.commands.Executor;
 import net.stuxcrystal.airblock.commands.arguments.ArgumentConverter;
 import net.stuxcrystal.airblock.commands.arguments.ArgumentParser;
+import net.stuxcrystal.airblock.commands.contrib.locales.LocaleResolver;
 import net.stuxcrystal.airblock.utils.ReflectionUtils;
 import net.stuxcrystal.airblock.commands.localization.TranslationManager;
 import org.apache.commons.lang3.ClassUtils;
@@ -82,7 +83,13 @@ public class PrimitiveParser implements ArgumentParser<Object> {
         }
 
         // Get the locale of the user and get a number-format according to it.
-        Locale locale = TranslationManager.getResolver(executor).getLocale();
+        LocaleResolver resolver = TranslationManager.getResolver(executor);
+        Locale locale;
+        if (resolver!=null)
+            locale = resolver.getLocale();
+        else
+            locale = Locale.ENGLISH;
+
         NumberFormat nf = NumberFormat.getNumberInstance(locale);
         nf.setGroupingUsed(true);
 

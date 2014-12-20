@@ -21,6 +21,8 @@ package net.stuxcrystal.airblock.commands.arguments.list;
 import net.stuxcrystal.airblock.commands.Executor;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.lang.reflect.Type;
+
 /**
  * Implementation of the argument list.
  */
@@ -110,7 +112,7 @@ public class ArgumentList extends ArgumentContainer {
     }
 
     @Override
-    public <E> E get(int index, Class<? extends E> cls) throws NumberFormatException {
+    public <E> E get(int index, Type cls) throws NumberFormatException {
         // Find the real index.
         int i = this.getRealIndex(index);
 

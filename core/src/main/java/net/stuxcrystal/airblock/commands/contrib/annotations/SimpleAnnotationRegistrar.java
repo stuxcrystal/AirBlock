@@ -19,6 +19,7 @@
 package net.stuxcrystal.airblock.commands.contrib.annotations;
 
 import lombok.NonNull;
+import net.stuxcrystal.airblock.commands.contrib.annotations.injections.InjectingMethodCallingStrategy;
 import net.stuxcrystal.airblock.commands.core.list.CommandList;
 import net.stuxcrystal.airblock.commands.core.list.CommandRegistrar;
 
@@ -42,12 +43,13 @@ public class SimpleAnnotationRegistrar implements CommandRegistrar {
     private void register(@NonNull CommandList list, @NonNull Class<?> current, @Nullable Object instance) {
         for (Method method : current.getDeclaredMethods()) {
             // Get the command annotation.
-            SimpleCommand cmd = method.getAnnotation(SimpleCommand.class);
+            Command cmd = method.getAnnotation(Command.class);
             if (cmd == null)
                 continue;
 
             // And if there is a command annotation, register it.
-            list.register(new LeafAnnotationCommand(cmd, method, instance));
+            CommandCallingStrategy ccs = cmd.strategy().getStrategy(method, instance);
+            list.register(new AnnotationCommand(cmd, ccs));
         }
 
         Class<?> parent = current.getSuperclass();

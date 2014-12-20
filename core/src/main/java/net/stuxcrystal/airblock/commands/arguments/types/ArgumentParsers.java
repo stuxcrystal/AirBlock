@@ -35,7 +35,7 @@ public final class ArgumentParsers {
     /**
      * Implementation of the most basic parser.
      */
-    public final ArgumentParser<String> STRING = new ArgumentParser<String>() {
+    public static final ArgumentParser<String> STRING = new ArgumentParser<String>() {
         @Override
         public boolean canConvert(ArgumentConverter parser, Type type) {
             return ReflectionUtils.toClass(type).equals(String.class);
@@ -50,12 +50,12 @@ public final class ArgumentParsers {
     /**
      * The parser that parses primitive types.
      */
-    public final ArgumentParser<Object> PRIMITIVE = new PrimitiveParser();
+    public static final ArgumentParser<Object> PRIMITIVE = new PrimitiveParser();
 
     /**
      * Parser that parses enum values.
      */
-    public final ArgumentParser<Object> ENUM = new ArgumentParser<Object>() {
+    public static final ArgumentParser<Object> ENUM = new ArgumentParser<Object>() {
         @Override
         public boolean canConvert(ArgumentConverter parser, Type type) {
             return ReflectionUtils.toClass(type).isEnum();
@@ -80,7 +80,7 @@ public final class ArgumentParsers {
     /**
      * Parser that parses arrays.
      */
-    public final ArgumentParser<Object> ARRAY = new ArgumentParser<Object>() {
+    public static final ArgumentParser<Object> ARRAY = new ArgumentParser<Object>() {
         @Override
         public boolean canConvert(ArgumentConverter parser, Type type) {
             if (!ReflectionUtils.toClass(type).isArray())
@@ -106,7 +106,7 @@ public final class ArgumentParsers {
      * @return The default parsers.
      */
     @Nonnull
-    public ArgumentParser<?>[] getDefaultParsers() {
+    public static ArgumentParser<?>[] getDefaultParsers() {
         return new ArgumentParser[] {
                 STRING,
                 PRIMITIVE,

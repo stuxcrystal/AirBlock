@@ -19,6 +19,8 @@
 package net.stuxcrystal.airblock.commands.contrib.history;
 
 import net.stuxcrystal.airblock.commands.contrib.sessions.Session;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +90,8 @@ public class HistoryContainer extends Session {
      * @param action The action to execute.
      */
     public void execute(Action action) {
-        Objects.nonNull(action);
+        if (action == null)
+            throw new NullPointerException("action");
         this.updateAccessTime();
 
         synchronized (this.lock) {
