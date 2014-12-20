@@ -129,10 +129,13 @@ public final class Bootstrapper {
      * @param backendEntryPoint The internal entry-point.
      * @param backendHandle     The internal backend-handle.
      */
-    public static void begin(Object backendEntryPoint, BackendHandle backendHandle) {
+    public static void begin(BackendEntryPoint backendEntryPoint, BackendHandle backendHandle) {
         // Get the necessary data.
         Class<?> cls = backendEntryPoint.getClass();
         AirBlockLoader loader = cls.getAnnotation(AirBlockLoader.class);
+
+        if (loader == null)
+            throw new IllegalArgumentException("The given backend does not have an @AirBlockLoader annotation.");
 
         // Check if the values are valid.
         if (Bootstrapper.INSTANCES.containsKey(loader.value()))
@@ -149,16 +152,23 @@ public final class Bootstrapper {
         Bootstrapper.INSTANCES.put(loader.value(), new BootstrapperInstance(entry, backendHandle));
 
         // Start the entry-point.
+        backendEntryPoint.init(entry);
         entry.start();
+        backendEntryPoint.begin(entry);
     }
 
     /**
      * Stops the instance.
      * @param backendEntryPoint The backend-entry.
      */
-    public static void end(Object backendEntryPoint) {
+    public static void end(BackendEntryPoint backendEntryPoint) {
         BootstrapperInstance bi = Bootstrapper.getData(backendEntryPoint);
-        bi.getEp().stop();
+        EntryPoint entryPoint = bi.getEp();
+
+        backendEntryPoint.end(entryPoint);
+        entryPoint.stop();
+        backendEntryPoint.deinit(entryPoint);
+
         Bootstrapper.INSTANCES.remove(backendEntryPoint.getClass().getAnnotation(AirBlockLoader.class).value());
     }
 
@@ -166,9 +176,12 @@ public final class Bootstrapper {
      * Reloads the entry-point.
      * @param backendEntryPoint The reloaded entry-point.
      */
-    public static void reload(Object backendEntryPoint) {
+    public static void reload(BackendEntryPoint backendEntryPoint) {
         EntryPoint ep = Bootstrapper.getData(backendEntryPoint).getEp();
+
+        backendEntryPoint.reloading(ep);
         ep.reload();
+        backendEntryPoint.reloaded(ep);
     }
 
     /**
@@ -178,7 +191,7 @@ public final class Bootstrapper {
      * @return The handle.
      */
     @SuppressWarnings("unchecked")
-    private static <T> ExecutorHandle<T> wrap(Object backendEntryPoint, T object) {
+    private static <T> ExecutorHandle<T> wrap(BackendEntryPoint backendEntryPoint, T object) {
         return Bootstrapper.getData(backendEntryPoint).getHandle().wrap(object);
     }
 
@@ -188,7 +201,7 @@ public final class Bootstrapper {
      * @param handle             The handle.
      * @param <T> The type of the handle.
      */
-    public static <T> void login(Object backendEntryPoint, T handle) {
+    public static <T> void login(BackendEntryPoint backendEntryPoint, T handle) {
         BootstrapperInstance bi = Bootstrapper.getData(backendEntryPoint);
         bi.getHandle().getEnvironment().getHookManager().call(
                 new PlayerLoginHook(Bootstrapper.wrap(backendEntryPoint, handle).wrap(bi.getHandle().getEnvironment()))
@@ -201,7 +214,7 @@ public final class Bootstrapper {
      * @param handle             The handle.
      * @param <T> The type of the handle.
      */
-    public static <T> void logoff(Object backendEntryPoint, T handle) {
+    public static <T> void logoff(BackendEntryPoint backendEntryPoint, T handle) {
         BootstrapperInstance bi = Bootstrapper.getData(backendEntryPoint);
         bi.getHandle().getEnvironment().getHookManager().call(
                 new PlayerLogoffHook(Bootstrapper.wrap(backendEntryPoint, handle).wrap(bi.getHandle().getEnvironment()))

@@ -24,12 +24,14 @@ import net.canarymod.hook.player.ConnectionHook;
 import net.canarymod.hook.player.DisconnectionHook;
 import net.canarymod.plugin.Plugin;
 import net.canarymod.plugin.PluginListener;
+import net.stuxcrystal.airblock.BackendEntryPoint;
 import net.stuxcrystal.airblock.Bootstrapper;
+import net.stuxcrystal.airblock.EntryPoint;
 
 /**
  * The launcher for the air-block framework.
  */
-public class CanaryLauncher extends Plugin implements PluginListener {
+public class CanaryLauncher extends Plugin implements PluginListener, BackendEntryPoint {
 
     @Override
     public boolean enable() {
@@ -52,5 +54,69 @@ public class CanaryLauncher extends Plugin implements PluginListener {
     @HookHandler
     public void passLogoff(DisconnectionHook hook) {
         Bootstrapper.logoff(this, hook.getPlayer());
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Empty Methods to be overriden when needen.
+
+    /**
+     * Called when the environment has been bootstrapped but before the main
+     * EntryPoint has been initialized.
+     *
+     * @param entryPoint The main entrypoint.
+     */
+    @Override
+    public void init(EntryPoint entryPoint) {
+
+    }
+
+    /**
+     * Called after the EntryPoint has been initialized.
+     *
+     * @param entryPoint The main entrypoint.
+     */
+    @Override
+    public void begin(EntryPoint entryPoint) {
+
+    }
+
+    /**
+     * Called before the entry-point is being reloaded.
+     *
+     * @param entryPoint The main entrypoint.
+     */
+    @Override
+    public void reloading(EntryPoint entryPoint) {
+
+    }
+
+    /**
+     * Called after the entry-point has been reloaded.
+     *
+     * @param entryPoint The main entrypoint.
+     */
+    @Override
+    public void reloaded(EntryPoint entryPoint) {
+
+    }
+
+    /**
+     * Called before the EntryPoint is being disabled.
+     *
+     * @param entryPoint Before the entrypoint is being disabled.
+     */
+    @Override
+    public void end(EntryPoint entryPoint) {
+
+    }
+
+    /**
+     * Called before the entry-point is being disabled.
+     *
+     * @param entryPoint Before the entry-point is being disabled.
+     */
+    @Override
+    public void deinit(EntryPoint entryPoint) {
+
     }
 }
