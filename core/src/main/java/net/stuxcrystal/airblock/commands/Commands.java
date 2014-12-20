@@ -162,9 +162,9 @@ public class Commands implements CommandImplementation {
         // Try to find a suitable command that we had registered.
         if (this.commands.execute(command, executor, args)) {
             result = true;
-        }
-        if (this.commands.getCommand(command).size() != 0)
+        } else if (this.commands.getCommand(command).size() != 0) {
             result = null;
+        }
 
         // Make sure we pop it.
         executor.popContext();
