@@ -78,6 +78,7 @@ public class JULToLog4jBridge {
         Logger result = Logger.getLogger(UUID.randomUUID().toString() + "_log4j_" + logger.getName());
         result.setUseParentHandlers(false);
         result.addHandler(new Log4jHandler(logger));
+        result.setLevel(Level.ALL);
         return result;
     }
 
