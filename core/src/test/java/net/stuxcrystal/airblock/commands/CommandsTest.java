@@ -76,7 +76,7 @@ public class CommandsTest {
         when(fcl.execute(any(String.class), any(Executor.class), any(String.class))).thenReturn(false);
 
         Commands tCmd = new Commands(fcl, a_cmds, mock(Environment.class));
-        Assert.assertTrue("Command delegation reported that there was a command.", tCmd.execute("cmd", mock(Executor.class), ""));
+        Assert.assertTrue("Command delegation reported that there was no command.", tCmd.execute("cmd", mock(Executor.class), ""));
 
         for (Commands commands : t_cmds) {
             verify(commands, times(1)).execute(eq("cmd"), any(Executor.class), any(String.class));
