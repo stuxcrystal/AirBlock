@@ -24,19 +24,9 @@ public class PrimitiveType implements ObjectType {
     public static final String[] TRUE_VALUES = "1,yes,y,true,t".split(",");
 
     /**
-     * The default true value.
-     */
-    public static final String TRUE_VALUE = "true";
-
-    /**
      * Contains all values that can be considered as representative of a false value.
      */
     public static final String[] FALSE_VALUES = "0,no,n,false,f".split(",");
-
-    /**
-     * The default false value.
-     */
-    public static final String FALSE_VALUE = "false";
 
     /**
      * Checks if the value is true or false.
