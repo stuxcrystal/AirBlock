@@ -20,7 +20,7 @@
  * <p>Contains the configuration library of AirBlock.</p>
  * <p>
  *     It consists of two parts: The storage-system that will be storing
- *     the configurations in the locations the underlying backend or
+ *     the configurations in the storage the underlying backend or
  *     the plugin has specified.
  * </p>
  * <p>

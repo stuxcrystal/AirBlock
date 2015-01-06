@@ -31,6 +31,7 @@ import net.stuxcrystal.airblock.commands.core.hooks.predefined.PlayerLoginHook;
 import net.stuxcrystal.airblock.commands.core.hooks.predefined.PlayerLogoffHook;
 import net.stuxcrystal.airblock.commands.core.hooks.predefined.ShutdownHook;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
+import net.stuxcrystal.airblock.configuration.ConfigurationLoader;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,6 +54,10 @@ public final class Bootstrapper {
         @Getter
         @Setter
         private BackendHandle handle;
+
+        @Getter
+        @Setter
+        private ConfigurationLoader config;
     }
 
     /**
@@ -145,11 +150,14 @@ public final class Bootstrapper {
 
         EntryPoint entry = Bootstrapper.loadEntryPoint(loader);
 
+        // Configuration Loader
+        ConfigurationLoader cl = new ConfigurationLoader(backendEntryPoint.getBaseConfigurationStorage());
+
         // Prepare the environment.
         Environment environment = Bootstrapper.initializeEnvironment(loader, backendHandle);
         Environment.setInstance(environment);
-        entry.initialize(environment);
-        Bootstrapper.INSTANCES.put(loader.value(), new BootstrapperInstance(entry, backendHandle));
+        entry.initialize(environment, cl);
+        Bootstrapper.INSTANCES.put(loader.value(), new BootstrapperInstance(entry, backendHandle, cl));
 
         // Start the entry-point.
         backendEntryPoint.init(entry);
@@ -219,6 +227,15 @@ public final class Bootstrapper {
         bi.getHandle().getEnvironment().getHookManager().call(
                 new PlayerLogoffHook(Bootstrapper.wrap(backendEntryPoint, handle).wrap(bi.getHandle().getEnvironment()))
         );
+    }
+
+    /**
+     * Returns the configuration for the entry-point.
+     * @param backendEntryPoint The configuration for the entry-point.
+     * @return The configuration for the entry-point.
+     */
+    public static ConfigurationLoader getConfigurationLoader(BackendEntryPoint backendEntryPoint) {
+        return Bootstrapper.getData(backendEntryPoint).config;
     }
 
 }

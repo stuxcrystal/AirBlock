@@ -1,5 +1,7 @@
 package net.stuxcrystal.airblock;
 
+import net.stuxcrystal.airblock.configuration.storage.storage.ConfigurationStorage;
+
 /**
  * Interface for the most basic functions of the backend entry-point.
  */
@@ -42,4 +44,12 @@ public interface BackendEntryPoint {
      */
     public void deinit(EntryPoint entryPoint);
 
+    /**
+     * <p>The configuration-storage that is needed for preparing the
+     * ConfigurationLoader.</p>
+     *
+     * <p>Access the actual configuration-loader using {@link net.stuxcrystal.airblock.Bootstrapper#getConfigurationLoader(net.stuxcrystal.airblock.BackendEntryPoint)}</p>
+     * @return The configuration loader.
+     */
+    public ConfigurationStorage getBaseConfigurationStorage();
 }

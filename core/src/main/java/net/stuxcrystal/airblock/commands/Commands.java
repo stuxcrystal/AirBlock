@@ -169,7 +169,7 @@ public class Commands implements CommandImplementation {
         // Make sure we pop it.
         executor.popContext();
 
-        if (result != null && result) {
+        if (result == null || !result) {
             // Query child command handlers.
             for (Commands child : this.children) {
                 result = child.execute(command, executor, args);

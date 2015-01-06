@@ -27,6 +27,8 @@ import net.canarymod.plugin.PluginListener;
 import net.stuxcrystal.airblock.BackendEntryPoint;
 import net.stuxcrystal.airblock.Bootstrapper;
 import net.stuxcrystal.airblock.EntryPoint;
+import net.stuxcrystal.airblock.configuration.parser.files.yaml.YamlGenerator;
+import net.stuxcrystal.airblock.configuration.storage.storage.ConfigurationStorage;
 
 /**
  * The launcher for the air-block framework.
@@ -118,5 +120,18 @@ public class CanaryLauncher extends Plugin implements PluginListener, BackendEnt
     @Override
     public void deinit(EntryPoint entryPoint) {
 
+    }
+
+    /**
+     * <p>The configuration-storage that is needed for preparing the
+     * ConfigurationLoader.</p>
+     * <p/>
+     * <p>Access the actual configuration-loader using {@link net.stuxcrystal.airblock.Bootstrapper#getConfigurationLoader(net.stuxcrystal.airblock.BackendEntryPoint)}</p>
+     *
+     * @return The configuration loader.
+     */
+    @Override
+    public ConfigurationStorage getBaseConfigurationStorage() {
+        return new CanaryConfigurationStorage(new YamlGenerator(), this);
     }
 }

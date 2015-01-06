@@ -24,6 +24,7 @@ import lombok.NonNull;
 import net.stuxcrystal.airblock.commands.core.hooks.predefined.ReloadHook;
 import net.stuxcrystal.airblock.commands.core.hooks.predefined.ShutdownHook;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
+import net.stuxcrystal.airblock.configuration.ConfigurationLoader;
 
 /**
  * The implementation of a loader.
@@ -37,11 +38,17 @@ public abstract class EntryPoint {
     @Getter(AccessLevel.PUBLIC)
     private Environment environment;
 
+    @NonNull
+    @Getter(AccessLevel.PUBLIC)
+    private ConfigurationLoader configurationLoader;
+
     /**
      * Initializes the entry-point.
      * @param environment The initialized entry-point.
+     * @param loader      The loader for the configuration.
      */
-    final void initialize(@NonNull Environment environment) {
+    final void initialize(@NonNull Environment environment, @NonNull ConfigurationLoader loader) {
+        this.configurationLoader = loader;
         this.environment = environment;
     }
 
