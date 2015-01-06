@@ -20,6 +20,7 @@ package net.stuxcrystal.airblock.commands.arguments;
 
 import lombok.AllArgsConstructor;
 import net.stuxcrystal.airblock.commands.Executor;
+import net.stuxcrystal.airblock.commands.arguments.types.ArgumentParsers;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -81,4 +82,13 @@ public class ArgumentConverter {
         return parser.convert(executor, this, type, arg);
     }
 
+    /**
+     * Returns the ArgumentConverter with the default parsers.
+     * @return The ArgumentConverter with the default parsers.
+     */
+    public static ArgumentConverter getSimpleArgumentConverter() {
+        ArgumentConverter ac = new ArgumentConverter();
+        ac.registerParser(ArgumentParsers.getDefaultParsers());
+        return ac;
+    }
 }

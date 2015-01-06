@@ -65,7 +65,7 @@ public class Environment implements CommandSettings {
      * Contains the argument converter.
      */
     @NonNull
-    public ArgumentConverter argumentConverter = new ArgumentConverter();
+    public ArgumentConverter argumentConverter = ArgumentConverter.getSimpleArgumentConverter();
 
     /**
      * The argument splitter.
