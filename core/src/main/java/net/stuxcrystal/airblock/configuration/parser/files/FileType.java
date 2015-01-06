@@ -3,6 +3,7 @@ package net.stuxcrystal.airblock.configuration.parser.files;
 import net.stuxcrystal.airblock.configuration.parser.node.Node;
 
 import javax.annotation.WillClose;
+import javax.annotation.WillNotClose;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,7 +19,7 @@ public interface FileType {
      * @param node    The node to write.
      * @throws IOException If an I/O-Error occures.
      */
-    public void write(@WillClose OutputStream stream, Node node) throws IOException;
+    public void write(@WillNotClose OutputStream stream, Node node) throws IOException;
 
     /**
      * Reads a node from the stream.

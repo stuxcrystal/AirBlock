@@ -40,8 +40,9 @@ public class ListType implements ObjectType {
             throw new IllegalArgumentException("Node not supported.");
         Type componentType = ReflectionUtils.getGenericArguments(type)[0];
         List result = new ArrayList(((ListNode) node).getNodes().size());
-        for (Node child : ((ListNode) node).getNodes())
+        for (Node child : ((ListNode) node).getNodes()) {
             result.add(parser.parseNode(componentType, child));
+        }
         return result;
     }
 

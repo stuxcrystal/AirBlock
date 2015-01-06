@@ -78,7 +78,7 @@ public class PrimitiveType implements ObjectType {
         if (ClassUtils.isPrimitiveWrapper(cls))
             cls = ClassUtils.wrapperToPrimitive(cls);
         else if (String.class.isAssignableFrom(cls))
-            return new DataNode(value);
+            return value;
 
         if (cls.equals(boolean.class))
             return this.isTrue(value);

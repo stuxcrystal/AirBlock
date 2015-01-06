@@ -72,4 +72,33 @@ public class ConfigurationParser {
         throw new ReflectiveOperationException(new UnsupportedOperationException("Unsupported type."));
     }
 
+    /**
+     * Dumps an object to a node.
+     * @param o The object that should be dumped.
+     * @return The dumped node.
+     */
+    public Node dump(Object o) {
+        try {
+            return this.dumpNode(o.getClass(), o);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Parses the node.
+     * @param node  The node.
+     * @param cls   the type.
+     * @param <T>   The return type.
+     * @return The parsed node.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T parse(Node node, Class<T> cls) {
+        try {
+            return (T) this.parseNode(cls, node);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -96,8 +97,9 @@ public class ConfigurationType implements ObjectType {
 
             // Write to the field.
             String name = ConfigurationType.getActualFieldName(field);
-            if (fields.containsKey(name))
-                FieldUtils.writeField(field, object, parser.parseNode(field.getType(), fields.get(name)), true);
+            if (fields.containsKey(name)) {
+                FieldUtils.writeField(field, object, parser.parseNode(field.getGenericType(), fields.get(name)), true);
+            }
         }
 
         if (this.supportsType(cls.getSuperclass()))
@@ -135,8 +137,6 @@ public class ConfigurationType implements ObjectType {
      * @throws ReflectiveOperationException
      */
     private void dumpClass(ConfigurationParser parser, Map<String, Node> data, Class<?> cls, Object o) throws ReflectiveOperationException {
-        ObjectInputStream ois;
-
         for (Field field : cls.getDeclaredFields()) {
             // Make sure we don't access static fields.
             if (Modifier.isStatic(field.getModifiers()))
@@ -146,14 +146,22 @@ public class ConfigurationType implements ObjectType {
             if (Modifier.isTransient(field.getModifiers()))
                 continue;
 
+
             String name = ConfigurationType.getActualFieldName(field);
 
             // Make sure we don't override already existing fields.
             if (data.containsKey(name))
-                continue;
-
+                throw new IllegalArgumentException(name + " appears multiple times.");
+            
             // Parse the data.
-            data.put(name, parser.dumpNode(field.getGenericType(), FieldUtils.readField(field, o, true)));
+            Node node = parser.dumpNode(field.getGenericType(), FieldUtils.readField(field, o, true));
+
+            // Sets the comment when there is one.
+            String[] comment = getActualComment(field);
+            if (comment != null)
+                node.setComment(comment);
+
+            data.put(name, node);
         }
 
         // Parse the parent type.
@@ -173,6 +181,20 @@ public class ConfigurationType implements ObjectType {
                 return value.name();
         }
         return field.getName();
+    }
+
+    /**
+     * Returns the actual comment.
+     * @param field The field that should be commented.
+     * @return The field that should be commented.
+     */
+    private static String[] getActualComment(Field field) {
+        if (field.isAnnotationPresent(Value.class)) {
+            Value value = field.getAnnotation(Value.class);
+            if (value.comment().length > 0)
+                return value.comment();
+        }
+        return null;
     }
 
 }
