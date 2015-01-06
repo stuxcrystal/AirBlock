@@ -23,6 +23,7 @@ import net.stuxcrystal.airblock.commands.Executor;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -47,8 +48,8 @@ public class ArgumentConverter {
      * Adds a parser to the converter.
      * @param parser The parser for a value.
      */
-    public void registerParser(ArgumentParser<?> parser) {
-        this.parsers.add(parser);
+    public void registerParser(ArgumentParser<?>... parser) {
+        this.parsers.addAll(Arrays.asList(parser));
     }
 
     /**
