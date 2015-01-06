@@ -48,6 +48,15 @@ public class ConfigurationParser {
     }
 
     /**
+     * Configuration parser that allows to directly pass the configuration
+     * types.
+     * @param types The types to support.
+     */
+    public ConfigurationParser(ObjectType... types) {
+        this.types = new LinkedList<ObjectType>(Arrays.asList(types));
+    }
+
+    /**
      * Configuration parser with parent parser.
      * @param parent The parent parser.
      */
