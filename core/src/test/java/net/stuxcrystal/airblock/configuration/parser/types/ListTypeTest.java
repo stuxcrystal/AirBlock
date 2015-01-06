@@ -5,22 +5,37 @@ import net.stuxcrystal.airblock.configuration.parser.ConfigurationParser;
 import net.stuxcrystal.airblock.configuration.parser.node.DataNode;
 import net.stuxcrystal.airblock.configuration.parser.node.ListNode;
 import net.stuxcrystal.airblock.configuration.parser.node.Node;
+import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-public class ArrayTypeTest extends TestCase {
+public class ListTypeTest extends TestCase {
+
+    static class Fields {
+        public List<String> field;
+    }
 
     public void testSupportsType() throws Exception {
-        ArrayType type = new ArrayType();
-        assertTrue("Failed to support string array type.", type.supportsType(String[].class));
+        ListType type = new ListType();
+        assertTrue("Failed to support string array type.", type.supportsType(List.class));
+    }
+
+    public Type getTypeOfField() {
+        return FieldUtils.getDeclaredField(Fields.class, "field").getGenericType();
     }
 
     public void testParse() throws Exception {
-        ArrayType type = new ArrayType();
+        ListType type = new ListType();
         ConfigurationParser parser = mock(ConfigurationParser.class);
         // when(parser.parseNode(any(Class.class), any(Node.class))).thenThrow(new IllegalArgumentException());
         when(parser.parseNode(eq(String.class), any(DataNode.class))).thenAnswer(new Answer<String>() {
@@ -30,16 +45,16 @@ public class ArrayTypeTest extends TestCase {
             }
         });
 
-        assertTrue(Arrays.equals(
-                new String[] {"test", "a", "b"},
-                (Object[]) type.parse(parser, String[].class, new ListNode(Arrays.<Node>asList(
+        assertEquals(
+                Arrays.asList("test", "a", "b"),
+                type.parse(parser, getTypeOfField(), new ListNode(Arrays.<Node>asList(
                         new DataNode("test"), new DataNode("a"), new DataNode("b")
                 )))
-        ));
+        );
     }
 
     public void testDump() throws Exception {
-        ArrayType type = new ArrayType();
+        ListType type = new ListType();
         ConfigurationParser parser = mock(ConfigurationParser.class);
         when(parser.dumpNode(eq(String.class), any(DataNode.class))).thenAnswer(new Answer<DataNode>() {
             @Override
@@ -48,13 +63,14 @@ public class ArrayTypeTest extends TestCase {
             }
         });
 
-        String[] values = new String[] {"test", "a", "b"};
-        Node node = type.dump(parser, String[].class, values);
+        List<String> values = Arrays.asList("test", "a", "b");
+        Node node = type.dump(parser, getTypeOfField(), values);
         assertTrue("Invalid instance types", node instanceof ListNode);
         for (int i = 0; i<((ListNode)node).getNodes().size(); i++) {
             Node child = ((ListNode)node).getNodes().get(i);
             assertTrue("Correct instance type", child instanceof DataNode);
-            assertEquals(values[i], ((DataNode)child).getData());
+            assertEquals(values.get(i), ((DataNode)child).getData());
         }
     }
+
 }

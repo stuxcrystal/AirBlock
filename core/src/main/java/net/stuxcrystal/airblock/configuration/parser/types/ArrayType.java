@@ -40,8 +40,9 @@ public class ArrayType implements ObjectType {
             throw new IllegalArgumentException("Node not supported.");
         Type componentType = ReflectionUtils.getGenericComponentType(type);
         Object result = Array.newInstance(ReflectionUtils.toClass(componentType), ((ListNode) node).getNodes().size());
-        for (int i = 0; i<((ListNode) node).getNodes().size(); i++)
+        for (int i = 0; i<((ListNode) node).getNodes().size(); i++) {
             Array.set(result, i, parser.parseNode(componentType, ((ListNode) node).getNodes().get(i)));
+        }
         return result;
     }
 
