@@ -13,15 +13,47 @@ import java.util.LinkedList;
 public class ConfigurationParser {
 
     /**
+     * Returns all supported types.
+     * @return All supported types.
+     */
+    public LinkedList<ObjectType> getSupportedTypes() {
+        LinkedList<ObjectType> result = new LinkedList<ObjectType>();
+        result.addAll(this.types);
+        if (this.parent != null)
+            result.addAll(this.parent.getSupportedTypes());
+        return result;
+    }
+
+    /**
+     * The parent parser.
+     */
+    private ConfigurationParser parent = null;
+
+    /**
      * All supported types.
      */
-    public LinkedList<ObjectType> types = new LinkedList<ObjectType>(Arrays.asList(
-            new PrimitiveType(),
-            new ListType(),
-            new ArrayType(),
-            new MapType(),
-            new ConfigurationType()
-    ));
+    public LinkedList<ObjectType> types = new LinkedList<ObjectType>();
+
+    /**
+     * Basic Constructor for a configuration parser.
+     */
+    public ConfigurationParser() {
+        this.types = new LinkedList<ObjectType>(Arrays.asList(
+                new PrimitiveType(),
+                new ListType(),
+                new ArrayType(),
+                new MapType(),
+                new ConfigurationType()
+        ));
+    }
+
+    /**
+     * Configuration parser with parent parser.
+     * @param parent The parent parser.
+     */
+    public ConfigurationParser(ConfigurationParser parent) {
+        this.parent = parent;
+    }
 
     /**
      * Adds the given type.
@@ -48,7 +80,7 @@ public class ConfigurationParser {
      */
     public Node dumpNode(Type type, Object object) throws ReflectiveOperationException {
 
-        for (ObjectType ot : this.types) {
+        for (ObjectType ot : this.getSupportedTypes()) {
             if (ot.supportsType(type))
                 return ot.dump(this, type, object);
         }
@@ -65,7 +97,7 @@ public class ConfigurationParser {
      * @throws ReflectiveOperationException If we failed to dump the object.
      */
     public Object parseNode(Type type, Node node) throws ReflectiveOperationException {
-        for (ObjectType ot : this.types)
+        for (ObjectType ot : this.getSupportedTypes())
             if (ot.supportsType(type))
                 return ot.parse(this, type, node);
 
