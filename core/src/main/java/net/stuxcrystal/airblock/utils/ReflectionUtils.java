@@ -53,10 +53,10 @@ public class ReflectionUtils {
      */
     @NonNull
     public static Type getGenericComponentType(@NonNull Type type) {
-        if (type instanceof Class<?>)
-            return ((Class) type).getComponentType();
-        else if (type instanceof GenericArrayType)
+        if (type instanceof GenericArrayType)
             return ((GenericArrayType) type).getGenericComponentType();
+        else if (type instanceof Class<?>)
+            return ((Class) type).getComponentType();
         return null;
     }
 
@@ -100,6 +100,39 @@ public class ReflectionUtils {
             return parameters.getActualTypeArguments();
         } else {
             return new Class<?>[0];
+        }
+    }
+
+    /**
+     * Creates a new instance of the class.
+     * @param cls The class to instantiate.
+     * @param <T> The type of the class.
+     * @return The newly instantiated object or {@code null} if the instantiation failed.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T newInstance(Class<T> cls) {
+        Constructor constructor;
+        try {
+            constructor = cls.getConstructor();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        if (!constructor.isAccessible())
+            constructor.setAccessible(true);
+
+        try {
+            return (T)constructor.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        } catch (InvocationTargetException e) {
+            e.getCause().printStackTrace();
+            return null;
         }
     }
 }
