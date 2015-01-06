@@ -3,7 +3,7 @@ package net.stuxcrystal.airblock.configuration;
 import lombok.NonNull;
 import net.stuxcrystal.airblock.configuration.parser.ConfigurationParser;
 import net.stuxcrystal.airblock.configuration.parser.types.ObjectType;
-import net.stuxcrystal.airblock.configuration.storage.ConfigurationLocation;
+import net.stuxcrystal.airblock.configuration.storage.storage.ConfigurationStorage;
 import net.stuxcrystal.airblock.configuration.storage.ConfigurationModule;
 
 /**
@@ -19,7 +19,7 @@ public class ConfigurationLoader extends ConfigurationModule {
     /**
      * The parser for the configuration.
      */
-    protected ConfigurationLoader(@NonNull ConfigurationLocation location) {
+    public ConfigurationLoader(@NonNull ConfigurationStorage location) {
         super(null);
         this.setLocation(location);
     }
@@ -28,7 +28,7 @@ public class ConfigurationLoader extends ConfigurationModule {
      * Set the configuration location.
      * @param location The configuration location
      */
-    public void setLocation(@NonNull ConfigurationLocation location) {
+    public void setLocation(@NonNull ConfigurationStorage location) {
         super.setLocation(location);
     }
 

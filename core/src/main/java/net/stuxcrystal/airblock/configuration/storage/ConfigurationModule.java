@@ -4,10 +4,18 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import net.stuxcrystal.airblock.configuration.parser.ConfigurationParser;
+import net.stuxcrystal.airblock.configuration.parser.files.FileType;
+import net.stuxcrystal.airblock.configuration.parser.node.Node;
+import net.stuxcrystal.airblock.configuration.storage.location.ConfigurationLocation;
+import net.stuxcrystal.airblock.configuration.storage.storage.ConfigurationStorage;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.Stack;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Stores the configuration.
@@ -31,7 +39,7 @@ public class ConfigurationModule {
      */
     @Setter
     @Nullable
-    private ConfigurationLocation location = null;
+    private ConfigurationStorage location = null;
 
     /**
      * Constructor for subclasses of the configuration module.
@@ -55,26 +63,110 @@ public class ConfigurationModule {
     /**
      * Returns the given configuration file.
      * @param name  The name of the configuration.
-     * @param type  The type of the configuration.
-     * @param <T>   The type of the configuration.
      * @return The parsed configuration.
      * @throws IOException If an I/O-Operation fails.
      */
-    public <T> T getConfiguration(@NonNull String name, @NonNull Class<T> type) throws IOException {
-        return this.getParser().parse(
-                this.getLocation().read(this.getEffectiveModulePath(), name),
-                type
-        );
+    public ConfigurationLocation getConfiguration(@NonNull String name) throws IOException {
+        return this.getStorage().getConfiguration(this.getEffectiveModulePath(), name);
+    }
+
+    /**
+     * The parser.
+     * @param cls    The class.
+     * @param node   The node.
+     * @param <T>    The return type.
+     * @return The parsed file.
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T parse(@NonNull Class<?> cls, @NonNull Node node) {
+        return (T) this.getParser().parse(node, cls);
+    }
+
+    /**
+     * Returns the Input-Stream to this file.
+     * @param name  The name of the configuration file.
+     * @return The input stream.
+     * @throws IOException If an I/O-Operation fails.
+     */
+    public InputStream getInputStream(@NonNull String name) throws IOException {
+        return this.getConfiguration(name).getInputStream();
+    }
+
+    /**
+     * Loads the give file and parses it.
+     * @param cls    The class.
+     * @param name   The name of the configuration file.
+     * @param ft     The file types.
+     * @param <T>    The file type.
+     * @return The parsed class.
+     * @throws IOException If an I/O-Operation fails.
+     */
+    public <T> T load(@NonNull Class<?> cls, @NonNull String name, @NonNull FileType ft) throws IOException {
+        return this.parse(cls, this.getStorage().read(this.getEffectiveModulePath(), name, ft));
+    }
+
+    /**
+     * Loads the give file and parses it.
+     * @param cls    The class.
+     * @param name   The name of the configuration file.
+     * @param <T>    The file type.
+     * @return The parsed class.
+     * @throws IOException If an I/O-Operation fails.
+     */
+    public <T> T load(@NonNull Class<?> cls, @NonNull String name) throws IOException {
+        return this.parse(cls, this.getStorage().read(this.getEffectiveModulePath(), name));
+    }
+
+    /**
+     * Dumps the given object into a node tree.
+     * @param o The object.
+     * @return The dumped node.
+     */
+    private Node dump(Object o) {
+        return this.getParser().dump(o);
+    }
+
+    /**
+     * Returns the Input-Stream to this file.
+     * @param name  The name of the configuration file.
+     * @return The input stream.
+     * @throws IOException If an I/O-Operation fails.
+     */
+    public OutputStream getOutputStream(@NonNull String name) throws IOException {
+        return this.getConfiguration(name).getOutputStream();
+    }
+
+    /**
+     * Loads the give file and parses it.
+     * @param cls    The class.
+     * @param name   The name of the configuration file.
+     * @param o      The instance that holds the data.
+     * @param ft     The file types.
+     * @throws IOException If an I/O-Operation fails.
+     */
+    public void save(@NonNull Class<?> cls, @NonNull String name, @NonNull Object o, @NonNull FileType ft) throws IOException {
+        this.getStorage().write(this.getEffectiveModulePath(), name, this.dump(o), ft);
+    }
+
+    /**
+     * Loads the give file and parses it.
+     * @param cls    The class.
+     * @param name   The name of the configuration file.
+     * @param o      The instance that holds the data.
+     * @throws IOException If an I/O-Operation fails.
+     */
+    public void save(@NonNull Class<?> cls, @NonNull String name, @NonNull Object o) throws IOException {
+        this.getStorage().write(this.getEffectiveModulePath(), name, this.dump(o));
     }
 
     /**
      * Returns the location of the configurations.
      * @return The location of the configurations.
      */
-    public @NonNull ConfigurationLocation getLocation() {
+    public @NonNull ConfigurationStorage getStorage() {
         if (this.location != null)
             return this.location;
-        return this.getParent().getLocation();
+        return this.getParent().getStorage();
     }
 
     /**
@@ -92,8 +184,9 @@ public class ConfigurationModule {
      * @return The effective module path.
      */
     private @NonNull String[] getModulePath(boolean stopAtLocation) {
-        Stack<String> result = new Stack<String>();
+        LinkedList<String> result = new LinkedList<String>();
         this.determineModulePath(result, stopAtLocation);
+        Collections.reverse(result);
         return result.toArray(new String[result.size()]);
     }
 
@@ -117,12 +210,12 @@ public class ConfigurationModule {
      * Determines the path of the module.
      * @param stack The path of the module.
      */
-    private void determineModulePath(@NonNull Stack<String> stack, boolean stopAtLocation) {
+    private void determineModulePath(@NonNull Queue<String> stack, boolean stopAtLocation) {
         if (this.name != null)
-            stack.push(this.name);
+            stack.add(this.name);
 
         if (this.parent != null) {
-            if (this.location != null && stopAtLocation)
+            if (this.location == null || !stopAtLocation)
                 this.parent.determineModulePath(stack, stopAtLocation);
         }
     }
