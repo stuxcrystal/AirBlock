@@ -221,8 +221,10 @@ public class Commands implements CommandImplementation {
         try {
             result = this.execute(label, executor, arguments);
         } catch (Throwable e) {
-            this.locale.getEnvironment().getTranslationManager().translate(
-                    executor, TranslationManager.COMMAND_FAILURE, label
+            executor.sendMessage(
+                    this.locale.getEnvironment().getTranslationManager().translate(
+                            executor, TranslationManager.COMMAND_FAILURE, label
+                    )
             );
             this.locale.getLogger().log(Level.SEVERE, "Failed to execute: " + label, e);
             return;
@@ -230,13 +232,17 @@ public class Commands implements CommandImplementation {
 
         if (result == null) {
             // If the result is null, the user did not have permission to execute the command.
-            this.locale.getEnvironment().getTranslationManager().translate(
-                    executor, TranslationManager.COMMAND_NO_PERMISSION, label
+            executor.sendMessage(
+                    this.locale.getEnvironment().getTranslationManager().translate(
+                            executor, TranslationManager.COMMAND_NO_PERMISSION, label
+                    )
             );
         } else if (!result) {
-            // Otherwise there was really no permission to execute this command.
-            this.locale.getEnvironment().getTranslationManager().translate(
-                    executor, TranslationManager.COMMAND_NOT_FOUND, label
+            // Otherwise there was really no command found.
+            executor.sendMessage(
+                    this.locale.getEnvironment().getTranslationManager().translate(
+                            executor, TranslationManager.COMMAND_NOT_FOUND, label
+                    )
             );
         }
     }
