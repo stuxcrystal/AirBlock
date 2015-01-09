@@ -7,7 +7,6 @@ import net.stuxcrystal.airblock.configuration.storage.location.NullLocation;
 import net.stuxcrystal.airblock.configuration.storage.location.UriLocation;
 import net.stuxcrystal.airblock.configuration.storage.storage.SingleStringSeparatedLocationStorage;
 
-import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
@@ -51,17 +50,19 @@ public class ResourceStreamStorage extends SingleStringSeparatedLocationStorage 
      */
     @Override
     public ConfigurationLocation getConfiguration(String location) {
+        // Get the correct path.
         String result = this.base;
         if (!result.endsWith("/")) result += "/";
         result += location;
-        try {
-            URL uri = this.cl.getResource(result);
-            if (uri == null)
-                return new NullLocation();
-            return new UriLocation(uri.toURI());
-        } catch (URISyntaxException e) {
+
+        // Access the resource.
+        URL url = this.cl.getResource(result);
+        if (url == null)
             return new NullLocation();
-        }
+
+        // Create an URI-Location.
+        UriLocation ul = UriLocation.fromURL(url);
+        return ul!=null?ul:new NullLocation();
     }
 
     /**
