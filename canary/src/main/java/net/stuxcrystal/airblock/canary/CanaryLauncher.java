@@ -42,6 +42,7 @@ public class CanaryLauncher extends Plugin implements PluginListener, BackendEnt
         CanaryServerBackend csb = new CanaryServerBackend(this);
         Bootstrapper.begin(this, csb);
         Canary.hooks().registerListener(this, this);
+        Bootstrapper.start(this);
         return true;
     }
 

@@ -158,6 +158,10 @@ public final class Bootstrapper {
         Environment.setInstance(environment);
         entry.initialize(environment, cl);
         Bootstrapper.INSTANCES.put(loader.value(), new BootstrapperInstance(entry, backendHandle, cl));
+    }
+
+    public static void start(BackendEntryPoint backendEntryPoint) {
+        EntryPoint entry = Bootstrapper.getData(backendEntryPoint).getEp();
 
         // Start the entry-point.
         backendEntryPoint.init(entry);
