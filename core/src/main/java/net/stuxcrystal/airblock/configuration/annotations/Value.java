@@ -1,4 +1,4 @@
-package net.stuxcrystal.airblock.configuration;
+package net.stuxcrystal.airblock.configuration.annotations;
 
 import java.lang.annotation.*;
 

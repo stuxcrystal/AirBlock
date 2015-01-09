@@ -1,7 +1,7 @@
 package net.stuxcrystal.airblock.configuration.parser.files.yaml;
 
-import net.stuxcrystal.airblock.configuration.Configuration;
-import net.stuxcrystal.airblock.configuration.Value;
+import net.stuxcrystal.airblock.configuration.annotations.Configuration;
+import net.stuxcrystal.airblock.configuration.annotations.Value;
 import net.stuxcrystal.airblock.configuration.parser.ConfigurationParser;
 import org.junit.Test;
 

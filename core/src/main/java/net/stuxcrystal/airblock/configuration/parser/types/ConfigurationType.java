@@ -1,7 +1,7 @@
 package net.stuxcrystal.airblock.configuration.parser.types;
 
-import net.stuxcrystal.airblock.configuration.Configuration;
-import net.stuxcrystal.airblock.configuration.Value;
+import net.stuxcrystal.airblock.configuration.annotations.Configuration;
+import net.stuxcrystal.airblock.configuration.annotations.Value;
 import net.stuxcrystal.airblock.configuration.parser.ConfigurationParser;
 import net.stuxcrystal.airblock.configuration.parser.node.DataNode;
 import net.stuxcrystal.airblock.configuration.parser.node.MapNode;
@@ -9,13 +9,9 @@ import net.stuxcrystal.airblock.configuration.parser.node.Node;
 import net.stuxcrystal.airblock.utils.ReflectionUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
-import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
