@@ -63,7 +63,7 @@ public class SubCommand implements Command {
 
     @Override
     public boolean canExecute(@NonNull Executor executor, @NonNull String rawArguments) {
-        return true;
+        return this.commands.getCommand(SubCommand.splitArguments(rawArguments)[0]).size() > 0;
     }
 
     @Override
