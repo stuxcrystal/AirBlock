@@ -57,7 +57,9 @@ public abstract class ArgumentContainer extends ArgumentIterable<String> {
      * @throws IllegalArgumentException       The given type is not supported.
      * @throws ArrayIndexOutOfBoundsException If the index is invalid.
      */
-    public abstract <E> E get(int index, Type cls) throws NumberFormatException;
+    public <E> E get(int index, Type cls) throws NumberFormatException {
+        return this.getRaw(index, cls, null);
+    };
 
     /**
      * <p>Returns the converted argument at the given index.</p>
@@ -70,7 +72,7 @@ public abstract class ArgumentContainer extends ArgumentIterable<String> {
      *
      * @param index The index of the argument.
      * @param cls   The class of the argument.
-     * @param def   The default value.
+     * @param def   The default value. {@code null} if no default is given.
      * @param <T>   The type of the argument
      * @return The converted argument.
      */
@@ -83,6 +85,16 @@ public abstract class ArgumentContainer extends ArgumentIterable<String> {
             return def;
         }
     }
+
+    /**
+     * Returns the object using the raw value.
+     * @param index   The index.
+     * @param cls     The class.
+     * @param def     The default string value.
+     * @param <E>     The element type.
+     * @return The raw value.
+     */
+    public abstract <E> E getRaw(int index, Type cls, String def);
 
     @Override
     public String get(int index) {

@@ -31,4 +31,10 @@ public @interface Argument {
      */
     public int step() default 0;
 
+    /**
+     * The default value.
+     * @return The default value.
+     */
+    public String defaultValue() default "";
+
 }

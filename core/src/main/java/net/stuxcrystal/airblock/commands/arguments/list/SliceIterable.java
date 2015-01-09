@@ -124,10 +124,10 @@ class SliceIterable extends ArgumentContainer {
     }
 
     @Override
-    public <T> T get(int index, Type cls) {
+    public <T> T getRaw(int index, Type cls, String def) {
         int rindex = this.getRealIndex(index);
         if (rindex == -1)
             throw new IndexOutOfBoundsException(this.outOfBoundsMsg(index));
-        return this.getParent().get(this.start + (rindex * this.step), cls);
+        return this.getParent().getRaw(this.start + (rindex * this.step), cls, def);
     }
 }

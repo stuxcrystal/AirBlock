@@ -45,7 +45,7 @@ public class ArgumentStep extends Step {
                 return container.as(cls).toArray();
             return container.as(cls).copy();
         } else {
-            return scope.getArgumentList().get(argument.value(), type);
+            return scope.getArgumentList().getRaw(argument.value(), type, argument.defaultValue());
         }
     }
 }

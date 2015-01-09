@@ -112,16 +112,22 @@ public class ArgumentList extends ArgumentContainer {
     }
 
     @Override
-    public <E> E get(int index, Type cls) throws NumberFormatException {
+    public <E> E getRaw(int index, Type cls, String def) throws NumberFormatException {
         // Find the real index.
         int i = this.getRealIndex(index);
 
+        String value;
         // Check if the index exists.
-        if (i == -1)
-            throw new IndexOutOfBoundsException(this.outOfBoundsMsg(index));
+        if (i == -1) {
+            if (def == null)
+                throw new IndexOutOfBoundsException(this.outOfBoundsMsg(index));
+            value = def;
+        } else {
+            value = this.values[i];
+        }
 
         // Parse the values.
-        return this.executor.getContext().getArgumentConverter().parse(this.executor, cls, this.values[i]);
+        return this.executor.getContext().getArgumentConverter().parse(this.executor, cls, value);
     }
 
     @Override
