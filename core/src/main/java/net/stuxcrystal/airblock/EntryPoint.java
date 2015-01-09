@@ -26,6 +26,8 @@ import net.stuxcrystal.airblock.commands.core.hooks.predefined.ShutdownHook;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 import net.stuxcrystal.airblock.configuration.ConfigurationLoader;
 
+import java.util.logging.Logger;
+
 /**
  * The implementation of a loader.
  */
@@ -50,6 +52,14 @@ public abstract class EntryPoint {
     final void initialize(@NonNull Environment environment, @NonNull ConfigurationLoader loader) {
         this.configurationLoader = loader;
         this.environment = environment;
+    }
+
+    /**
+     * Shorthand for {@code ep.getEnvironment().getLogger();}
+     * @return The logger of this entry-point.
+     */
+    public final Logger getLogger() {
+        return this.environment.getLogger();
     }
 
     /**
