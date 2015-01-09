@@ -27,6 +27,7 @@ import net.canarymod.plugin.PluginListener;
 import net.stuxcrystal.airblock.BackendEntryPoint;
 import net.stuxcrystal.airblock.Bootstrapper;
 import net.stuxcrystal.airblock.EntryPoint;
+import net.stuxcrystal.airblock.configuration.parser.files.FileType;
 import net.stuxcrystal.airblock.configuration.parser.files.yaml.YamlGenerator;
 import net.stuxcrystal.airblock.configuration.storage.storage.ConfigurationStorage;
 import net.stuxcrystal.airblock.configuration.storage.storage.multi.MultiStorage;
@@ -126,6 +127,14 @@ public class CanaryLauncher extends Plugin implements PluginListener, BackendEnt
     }
 
     /**
+     * Returns the default file-type.
+     * @return The default file-type.
+     */
+    public FileType getDefaultFileType() {
+        return new YamlGenerator();
+    }
+
+    /**
      * <p>The configuration-storage that is needed for preparing the
      * ConfigurationLoader.</p>
      * <p/>
@@ -135,11 +144,13 @@ public class CanaryLauncher extends Plugin implements PluginListener, BackendEnt
      */
     @Override
     public ConfigurationStorage getBaseConfigurationStorage() {
-        // We will allow autoloading from the resource-directory.
+        // We will allow autoloading from the resources of the plugins.
         return new MultiStorage(
-                new CanaryConfigurationStorage(new YamlGenerator(), this),
+                new CanaryConfigurationStorage(this.getDefaultFileType(), this),
                 new ConfigurationStorage[]{
-                    new ResourceStreamStorage(this.getClass().getClassLoader(), "/", ".yml", new YamlGenerator())
+                    // We actually want to add the jar-file where the plugin is located to allow to store default
+                    // configurations in there.
+                    new ResourceStreamStorage(this.getClass().getClassLoader(), "/", ".cfg", this.getDefaultFileType())
                 }
         );
     }
