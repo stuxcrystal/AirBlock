@@ -8,6 +8,7 @@ import net.stuxcrystal.airblock.configuration.parser.files.FileType;
 import net.stuxcrystal.airblock.configuration.parser.node.Node;
 import net.stuxcrystal.airblock.configuration.storage.location.ConfigurationLocation;
 import net.stuxcrystal.airblock.configuration.storage.storage.ConfigurationStorage;
+import net.stuxcrystal.airblock.configuration.storage.storage.SubModuleStorage;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -218,5 +219,21 @@ public class ConfigurationModule {
             if (this.location == null || !stopAtLocation)
                 this.parent.determineModulePath(stack, stopAtLocation);
         }
+    }
+
+    /**
+     * Converts this configuration-module to a storage-location.
+     * @return The Configuration-Storage that can be passed as other location.
+     */
+    public ConfigurationStorage toStorage() {
+        return new SubModuleStorage(this);
+    }
+
+    /**
+     * Adds the read-only locations to the module.
+     * @param storages The storage.
+     */
+    public void addLocations(ConfigurationStorage... storages) {
+        ConfigurationStorage.addToModule(this, storages);
     }
 }

@@ -8,7 +8,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * The location for the configuration.
+ * <p>The location for the configuration.</p>
+ * <p>
+ *     The location of the input-file may not be the same as the location of the output file.
+ *     Thus, make sure you write *ALL* your data into the stream.
+ * </p>
  */
 public abstract class ConfigurationLocation {
 
@@ -19,7 +23,10 @@ public abstract class ConfigurationLocation {
     public abstract boolean canWrite();
 
     /**
-     * Opens an input stream to this location.
+     * <p>Opens an input stream to this location.</p>
+     * <p>
+     *     Return {@code null} if the file does not exist.
+     * </p>
      * @return The input-stream to this location.
      */
     public abstract InputStream getInputStream() throws IOException;
@@ -35,6 +42,8 @@ public abstract class ConfigurationLocation {
         // I h8 TCFTC.
         try {
             is = this.getInputStream();
+            if (is == null)
+                throw new IOException("No stream obtained.");
             return fileType.load(is);
         } finally {
             if (is != null) try { is.close(); } catch (IOException ignored) {};
@@ -59,6 +68,8 @@ public abstract class ConfigurationLocation {
         OutputStream os = null;
         try {
             os = this.getOutputStream();
+            if (os == null)
+                throw new IOException("No stream obtained.");
             fileType.write(os, node);
         } finally {
             if (os != null) try { os.close(); } catch (IOException ignored) {};

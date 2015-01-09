@@ -34,7 +34,11 @@ public class FileLocation extends ConfigurationLocation {
      */
     @Override
     public InputStream getInputStream() throws IOException{
-        return new FileInputStream(this.file);
+        try {
+            return new FileInputStream(this.file);
+        } catch (FileNotFoundException e) {
+            return null;
+        }
     }
 
     /**

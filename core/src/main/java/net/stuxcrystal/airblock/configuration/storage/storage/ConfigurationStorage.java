@@ -3,7 +3,10 @@ package net.stuxcrystal.airblock.configuration.storage.storage;
 import lombok.NonNull;
 import net.stuxcrystal.airblock.configuration.parser.files.FileType;
 import net.stuxcrystal.airblock.configuration.parser.node.Node;
+import net.stuxcrystal.airblock.configuration.storage.ConfigurationModule;
 import net.stuxcrystal.airblock.configuration.storage.location.ConfigurationLocation;
+import net.stuxcrystal.airblock.configuration.storage.storage.multi.MultiStorage;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -107,6 +110,25 @@ public abstract class ConfigurationStorage {
      */
     public void write(@NonNull String[] modulePath, @NonNull String configuration, @NonNull Node node) throws IOException {
         this.write(modulePath, configuration, node, this.getType(modulePath, configuration));
+    }
+
+    /**
+     * Adds the given storages to the module.
+     * @param module    The module whose storages should be added.
+     * @param storages  The storages that should be added for reading.
+     */
+    public static void addToModule(@NonNull ConfigurationModule module, @NonNull ConfigurationStorage... storages) {
+        ConfigurationStorage moduleStorage = module.getStorage();
+        // Add the storages to the multistorage of the module.
+        if (moduleStorage instanceof MultiStorage) {
+            ((MultiStorage) moduleStorage).setChildStorage(ArrayUtils.addAll(
+                    ((MultiStorage) moduleStorage).getChildStorage(),
+                    storages
+            ));
+        } else {
+            // Just wrap the module-storage otherwise.
+            module.setLocation(new MultiStorage(module.toStorage(), storages));
+        }
     }
 
 }

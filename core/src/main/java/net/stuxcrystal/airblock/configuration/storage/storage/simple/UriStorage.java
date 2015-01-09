@@ -1,16 +1,17 @@
-package net.stuxcrystal.airblock.configuration.storage.storage;
+package net.stuxcrystal.airblock.configuration.storage.storage.simple;
 
 import lombok.NonNull;
 import net.stuxcrystal.airblock.configuration.parser.files.FileType;
 import net.stuxcrystal.airblock.configuration.storage.location.ConfigurationLocation;
-import net.stuxcrystal.airblock.configuration.storage.location.FileLocation;
+import net.stuxcrystal.airblock.configuration.storage.location.UriLocation;
+import net.stuxcrystal.airblock.configuration.storage.storage.SingleStringSeparatedLocationStorage;
 
-import java.io.File;
+import java.net.URI;
 
 /**
- * The local storage.
+ * Very simple storage-location for URIs.
  */
-public class LocalStorage extends SingleStringSeparatedLocationStorage {
+public class UriStorage extends SingleStringSeparatedLocationStorage {
 
     /**
      * The default file-type.
@@ -18,18 +19,19 @@ public class LocalStorage extends SingleStringSeparatedLocationStorage {
     private final FileType ft;
 
     /**
-     * The base-dir.
+     * The base uri.
      */
-    private final File baseDir;
+    private URI uri;
 
     /**
      * The separator character.
      *
-     * @param suffix The suffix.
+     * @param suffix    The default suffix.
+     * @param ft        The default file-type.
      */
-    protected LocalStorage(File baseDir, String suffix, FileType ft) {
-        super(File.separator, suffix);
-        this.baseDir = baseDir;
+    protected UriStorage(@NonNull URI uri, @NonNull String suffix, FileType ft) {
+        super("/", suffix);
+        this.uri = uri;
         this.ft = ft;
     }
 
@@ -41,7 +43,10 @@ public class LocalStorage extends SingleStringSeparatedLocationStorage {
      */
     @Override
     public ConfigurationLocation getConfiguration(String location) {
-        return new FileLocation(new File(this.baseDir, location));
+        String result = this.uri.toString();
+        if (!result.endsWith("/")) result += "/";
+        result += location;
+        return new UriLocation(URI.create(result));
     }
 
     /**

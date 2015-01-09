@@ -29,6 +29,8 @@ import net.stuxcrystal.airblock.Bootstrapper;
 import net.stuxcrystal.airblock.EntryPoint;
 import net.stuxcrystal.airblock.configuration.parser.files.yaml.YamlGenerator;
 import net.stuxcrystal.airblock.configuration.storage.storage.ConfigurationStorage;
+import net.stuxcrystal.airblock.configuration.storage.storage.multi.MultiStorage;
+import net.stuxcrystal.airblock.configuration.storage.storage.simple.ResourceStreamStorage;
 
 /**
  * The launcher for the air-block framework.
@@ -132,6 +134,12 @@ public class CanaryLauncher extends Plugin implements PluginListener, BackendEnt
      */
     @Override
     public ConfigurationStorage getBaseConfigurationStorage() {
-        return new CanaryConfigurationStorage(new YamlGenerator(), this);
+        // We will allow autoloading from the resource-directory.
+        return new MultiStorage(
+                new CanaryConfigurationStorage(new YamlGenerator(), this),
+                new ConfigurationStorage[]{
+                    new ResourceStreamStorage(this.getClass().getClassLoader(), "/", ".yml", new YamlGenerator())
+                }
+        );
     }
 }
