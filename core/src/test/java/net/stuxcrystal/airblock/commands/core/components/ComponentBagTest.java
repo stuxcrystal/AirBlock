@@ -19,16 +19,14 @@
 package net.stuxcrystal.airblock.commands.core.components;
 
 import lombok.NonNull;
-import net.stuxcrystal.airblock.commands.backend.Backend;
-import net.stuxcrystal.airblock.commands.backend.BackendHandle;
-import net.stuxcrystal.airblock.commands.backend.ExecutorHandle;
-import net.stuxcrystal.airblock.commands.backend.Handle;
+import net.stuxcrystal.airblock.commands.core.backend.Backend;
+import net.stuxcrystal.airblock.commands.core.backend.BackendHandle;
+import net.stuxcrystal.airblock.commands.core.backend.ExecutorHandle;
+import net.stuxcrystal.airblock.commands.core.backend.Handle;
 import net.stuxcrystal.airblock.commands.core.CommandImplementation;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 import org.junit.Test;
 
-import javax.annotation.Nullable;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 

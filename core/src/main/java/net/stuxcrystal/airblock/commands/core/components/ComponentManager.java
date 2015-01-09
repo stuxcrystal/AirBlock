@@ -20,7 +20,7 @@ package net.stuxcrystal.airblock.commands.core.components;
 
 
 import lombok.NonNull;
-import net.stuxcrystal.airblock.commands.backend.HandleWrapper;
+import net.stuxcrystal.airblock.commands.core.backend.HandleWrapper;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;

@@ -18,7 +18,7 @@
 
 package net.stuxcrystal.airblock.commands.contrib.threads;
 
-import net.stuxcrystal.airblock.commands.backend.BackendHandle;
+import net.stuxcrystal.airblock.commands.core.backend.BackendHandle;
 import net.stuxcrystal.airblock.commands.core.components.Component;
 import net.stuxcrystal.airblock.commands.core.components.Components;
 import net.stuxcrystal.airblock.commands.core.hooks.HookHandler;

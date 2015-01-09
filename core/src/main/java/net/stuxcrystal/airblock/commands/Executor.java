@@ -19,8 +19,8 @@
 package net.stuxcrystal.airblock.commands;
 
 import lombok.NonNull;
-import net.stuxcrystal.airblock.commands.backend.ExecutorHandle;
-import net.stuxcrystal.airblock.commands.backend.HandleWrapper;
+import net.stuxcrystal.airblock.commands.core.backend.ExecutorHandle;
+import net.stuxcrystal.airblock.commands.core.backend.HandleWrapper;
 import net.stuxcrystal.airblock.commands.contrib.Permissions;
 import net.stuxcrystal.airblock.commands.contrib.history.History;
 import net.stuxcrystal.airblock.commands.contrib.history.HistoryComponent;

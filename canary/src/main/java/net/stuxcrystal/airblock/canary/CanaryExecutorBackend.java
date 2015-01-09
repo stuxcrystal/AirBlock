@@ -20,7 +20,7 @@ package net.stuxcrystal.airblock.canary;
 
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.chat.MessageReceiver;
-import net.stuxcrystal.airblock.commands.backend.ExecutorHandle;
+import net.stuxcrystal.airblock.commands.core.backend.ExecutorHandle;
 import net.stuxcrystal.airblock.commands.contrib.Permissions;
 import net.stuxcrystal.airblock.commands.contrib.locales.LocaleResolver;
 import net.stuxcrystal.airblock.commands.core.components.Component;

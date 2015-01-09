@@ -18,7 +18,7 @@
 
 package net.stuxcrystal.airblock.commands.contrib.scheduler.fallback;
 
-import net.stuxcrystal.airblock.commands.backend.BackendHandle;
+import net.stuxcrystal.airblock.commands.core.backend.BackendHandle;
 
 /**
  * Fallback implementation of the task.

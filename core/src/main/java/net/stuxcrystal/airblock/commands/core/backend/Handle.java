@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.stuxcrystal.airblock.commands.backend;
+package net.stuxcrystal.airblock.commands.core.backend;
 
 import lombok.*;
-import org.apache.commons.lang3.ObjectUtils;
 
 import javax.annotation.Nullable;
 import java.util.UUID;

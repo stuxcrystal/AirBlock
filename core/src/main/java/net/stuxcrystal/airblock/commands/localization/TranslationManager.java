@@ -23,7 +23,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import net.stuxcrystal.airblock.commands.Executor;
-import net.stuxcrystal.airblock.commands.backend.ExecutorHandle;
 import net.stuxcrystal.airblock.commands.contrib.locales.LocaleResolver;
 import net.stuxcrystal.airblock.commands.contrib.locales.SystemDefaultLocaleResolver;
 import net.stuxcrystal.airblock.commands.localization.sources.ArrayValueSource;

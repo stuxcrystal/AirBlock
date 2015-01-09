@@ -27,8 +27,8 @@ import net.canarymod.commandsys.Command;
 import net.canarymod.commandsys.CommandDependencyException;
 import net.canarymod.plugin.Plugin;
 import net.canarymod.tasks.ServerTask;
-import net.stuxcrystal.airblock.commands.backend.BackendHandle;
-import net.stuxcrystal.airblock.commands.backend.ExecutorHandle;
+import net.stuxcrystal.airblock.commands.core.backend.BackendHandle;
+import net.stuxcrystal.airblock.commands.core.backend.ExecutorHandle;
 import net.stuxcrystal.airblock.commands.core.CommandImplementation;
 import org.apache.commons.lang3.StringUtils;
 

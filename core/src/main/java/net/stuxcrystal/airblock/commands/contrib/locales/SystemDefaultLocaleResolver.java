@@ -18,7 +18,7 @@
 
 package net.stuxcrystal.airblock.commands.contrib.locales;
 
-import net.stuxcrystal.airblock.commands.backend.ExecutorHandle;
+import net.stuxcrystal.airblock.commands.core.backend.ExecutorHandle;
 import net.stuxcrystal.airblock.commands.core.components.Component;
 import net.stuxcrystal.airblock.commands.core.components.Components;
 

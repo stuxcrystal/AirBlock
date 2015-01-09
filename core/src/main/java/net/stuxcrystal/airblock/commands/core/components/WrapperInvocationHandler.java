@@ -18,7 +18,7 @@
 
 package net.stuxcrystal.airblock.commands.core.components;
 
-import net.stuxcrystal.airblock.commands.backend.HandleWrapper;
+import net.stuxcrystal.airblock.commands.core.backend.HandleWrapper;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

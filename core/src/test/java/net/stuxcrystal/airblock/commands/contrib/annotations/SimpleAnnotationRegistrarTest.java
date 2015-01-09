@@ -22,7 +22,7 @@ import net.stuxcrystal.airblock.commands.Executor;
 import net.stuxcrystal.airblock.commands.arguments.ArgumentParser;
 import net.stuxcrystal.airblock.commands.arguments.list.ArgumentList;
 import net.stuxcrystal.airblock.commands.arguments.types.ArgumentParsers;
-import net.stuxcrystal.airblock.commands.backend.BackendHandle;
+import net.stuxcrystal.airblock.commands.core.backend.BackendHandle;
 import net.stuxcrystal.airblock.commands.contrib.annotations.injections.Argument;
 import net.stuxcrystal.airblock.commands.contrib.annotations.injections.ScopeObject;
 import net.stuxcrystal.airblock.commands.core.list.CommandList;

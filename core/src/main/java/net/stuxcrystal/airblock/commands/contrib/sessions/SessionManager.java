@@ -18,7 +18,7 @@
 
 package net.stuxcrystal.airblock.commands.contrib.sessions;
 
-import net.stuxcrystal.airblock.commands.backend.Handle;
+import net.stuxcrystal.airblock.commands.core.backend.Handle;
 import net.stuxcrystal.airblock.commands.core.components.Component;
 import net.stuxcrystal.airblock.commands.core.components.Components;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;

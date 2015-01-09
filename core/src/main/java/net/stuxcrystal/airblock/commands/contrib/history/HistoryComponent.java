@@ -18,7 +18,7 @@
 
 package net.stuxcrystal.airblock.commands.contrib.history;
 
-import net.stuxcrystal.airblock.commands.backend.ExecutorHandle;
+import net.stuxcrystal.airblock.commands.core.backend.ExecutorHandle;
 import net.stuxcrystal.airblock.commands.core.components.Component;
 import net.stuxcrystal.airblock.commands.core.components.Components;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
@@ -104,7 +104,7 @@ public class HistoryComponent {
 
     /**
      * Returns the next action that would have been executed
-     * when {@link #redoAction(net.stuxcrystal.airblock.commands.backend.ExecutorHandle)} is being executed.
+     * when {@link #redoAction(net.stuxcrystal.airblock.commands.core.backend.ExecutorHandle)} is being executed.
      *
      * @return {@code null} if there is no action to redoAction.
      */

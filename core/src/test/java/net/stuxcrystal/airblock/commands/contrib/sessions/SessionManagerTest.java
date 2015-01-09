@@ -18,8 +18,7 @@
 
 package net.stuxcrystal.airblock.commands.contrib.sessions;
 
-import lombok.AllArgsConstructor;
-import net.stuxcrystal.airblock.commands.backend.Handle;
+import net.stuxcrystal.airblock.commands.core.backend.Handle;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 import org.junit.Test;
 

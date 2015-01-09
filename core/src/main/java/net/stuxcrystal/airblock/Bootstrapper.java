@@ -24,12 +24,10 @@ import lombok.Setter;
 import net.stuxcrystal.airblock.annotations.AirBlockLoader;
 import net.stuxcrystal.airblock.annotations.ComponentList;
 import net.stuxcrystal.airblock.commands.arguments.ArgumentParser;
-import net.stuxcrystal.airblock.commands.backend.BackendHandle;
-import net.stuxcrystal.airblock.commands.backend.ExecutorHandle;
-import net.stuxcrystal.airblock.commands.core.hooks.Hook;
+import net.stuxcrystal.airblock.commands.core.backend.BackendHandle;
+import net.stuxcrystal.airblock.commands.core.backend.ExecutorHandle;
 import net.stuxcrystal.airblock.commands.core.hooks.predefined.PlayerLoginHook;
 import net.stuxcrystal.airblock.commands.core.hooks.predefined.PlayerLogoffHook;
-import net.stuxcrystal.airblock.commands.core.hooks.predefined.ShutdownHook;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 import net.stuxcrystal.airblock.configuration.ConfigurationLoader;
 

@@ -18,8 +18,6 @@
 
 package net.stuxcrystal.airblock.annotations;
 
-import net.stuxcrystal.airblock.commands.backend.Handle;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

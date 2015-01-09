@@ -21,9 +21,6 @@ package net.stuxcrystal.airblock.commands.contrib.sessions;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
-import net.stuxcrystal.airblock.commands.Executor;
-import net.stuxcrystal.airblock.commands.backend.ExecutorHandle;
-import net.stuxcrystal.airblock.commands.core.settings.CommandSettings;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 
 /**

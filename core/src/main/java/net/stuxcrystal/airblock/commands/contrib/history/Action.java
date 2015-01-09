@@ -20,7 +20,7 @@ package net.stuxcrystal.airblock.commands.contrib.history;
 
 
 import net.stuxcrystal.airblock.commands.Executor;
-import net.stuxcrystal.airblock.commands.backend.ExecutorHandle;
+import net.stuxcrystal.airblock.commands.core.backend.ExecutorHandle;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 
 /**

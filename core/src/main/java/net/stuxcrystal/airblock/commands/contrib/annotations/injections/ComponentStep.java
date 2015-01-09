@@ -1,6 +1,6 @@
 package net.stuxcrystal.airblock.commands.contrib.annotations.injections;
 
-import net.stuxcrystal.airblock.commands.backend.HandleWrapper;
+import net.stuxcrystal.airblock.commands.core.backend.HandleWrapper;
 import net.stuxcrystal.airblock.utils.ReflectionUtils;
 
 import java.lang.annotation.*;

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.stuxcrystal.airblock.commands.backend;
+package net.stuxcrystal.airblock.commands.core.backend;
 
 import lombok.NonNull;
 import net.stuxcrystal.airblock.commands.core.CommandImplementation;
