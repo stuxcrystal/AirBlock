@@ -44,7 +44,8 @@ public class MultiStorageLocation extends ConfigurationLocation {
     }
 
     /**
-     * Opens an input stream to this location.
+     * <p>Opens an input stream to this location.</p>
+     * <p>Please note that it will try to obtain a stream from every storage until a storage returns one.</p>
      *
      * @return The input-stream to this location.
      */
@@ -55,11 +56,11 @@ public class MultiStorageLocation extends ConfigurationLocation {
         List<IOException> exceptionList = new ArrayList<IOException>();
 
         // Try all locations but try the write-storage first.
-        for (ConfigurationStorage cs : ArrayUtils.add(storage.getChildStorage(), 0, storage.getWriteStorage())) {
+        for (ConfigurationStorage cs : ArrayUtils.add(this.storage.getChildStorage(), 0, this.storage.getWriteStorage())) {
             // Try to access the storage location.
             InputStream is = null;
             try {
-                is = cs.getInputStream(module, configuration);
+                is = cs.getInputStream(this.module, this.configuration);
             } catch (IOException e) {
                 // Just suppress IOExceptions.
                 exceptionList.add(e);
