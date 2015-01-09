@@ -16,12 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.stuxcrystal.airblock.commands.core.backend;
+package net.stuxcrystal.airblock.commands;
 
 import lombok.NonNull;
 import net.stuxcrystal.airblock.commands.Executor;
 import net.stuxcrystal.airblock.commands.contrib.threads.FallbackThreadSystem;
 import net.stuxcrystal.airblock.commands.contrib.threads.ThreadManager;
+import net.stuxcrystal.airblock.commands.core.backend.BackendHandle;
+import net.stuxcrystal.airblock.commands.core.backend.ExecutorHandle;
+import net.stuxcrystal.airblock.commands.core.backend.HandleWrapper;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 import org.apache.commons.lang3.StringUtils;
 
@@ -45,7 +48,7 @@ public class Backend extends HandleWrapper<BackendHandle<?,?>> {
      * @param handle The handle to wrap.
      * @return The wrapped executor.
      */
-    Executor wrap(ExecutorHandle<?> handle) {
+    public Executor wrap(ExecutorHandle<?> handle) {
         return new Executor(handle, this.getEnvironment());
     }
 

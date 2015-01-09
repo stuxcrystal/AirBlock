@@ -23,7 +23,7 @@ import lombok.NonNull;
 import net.stuxcrystal.airblock.commands.arguments.ArgumentConverter;
 import net.stuxcrystal.airblock.commands.arguments.split.ArgumentSplitter;
 import net.stuxcrystal.airblock.commands.arguments.split.SimpleSplit;
-import net.stuxcrystal.airblock.commands.core.backend.Backend;
+import net.stuxcrystal.airblock.commands.Backend;
 import net.stuxcrystal.airblock.commands.core.backend.BackendHandle;
 import net.stuxcrystal.airblock.commands.contrib.scheduler.Scheduler;
 import net.stuxcrystal.airblock.commands.contrib.scheduler.fallback.FallbackScheduler;

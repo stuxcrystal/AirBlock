@@ -19,7 +19,7 @@
 package net.stuxcrystal.airblock.commands.core.components;
 
 import lombok.NonNull;
-import net.stuxcrystal.airblock.commands.core.backend.Backend;
+import net.stuxcrystal.airblock.commands.Backend;
 import net.stuxcrystal.airblock.commands.core.backend.BackendHandle;
 import net.stuxcrystal.airblock.commands.core.backend.ExecutorHandle;
 import net.stuxcrystal.airblock.commands.core.backend.Handle;
