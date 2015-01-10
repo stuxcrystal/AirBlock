@@ -21,6 +21,7 @@ package net.stuxcrystal.airblock.commands;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import net.stuxcrystal.airblock.commands.core.CommandImplementation;
+import net.stuxcrystal.airblock.commands.core.ExecutionFilter;
 import net.stuxcrystal.airblock.commands.core.SubCommand;
 import net.stuxcrystal.airblock.commands.core.list.Command;
 import net.stuxcrystal.airblock.commands.core.list.CommandList;
@@ -44,6 +45,35 @@ import java.util.logging.Level;
 public class Commands implements CommandImplementation {
 
     /**
+     * The default filter that allows everyone to use the commands.
+     */
+    public static ExecutionFilter DEFAULT_FILTER = new ExecutionFilter() {
+        @Override
+        public boolean canExecute(Executor executor, String label, String arguments) {
+            return true;
+        }
+    };
+
+    /**
+     * Storage for all child handlers.
+     */
+    @AllArgsConstructor
+    public class ChildHandler {
+
+        /**
+         * The command.
+         */
+        final Commands command;
+
+        /**
+         * The filter.
+         */
+        final ExecutionFilter filter;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
      * Contains all commands.
      */
     private CommandList commands;
@@ -51,7 +81,7 @@ public class Commands implements CommandImplementation {
     /**
      * Contains all children of this commands.
      */
-    private List<Commands> children;
+    private List<ChildHandler> children;
 
     /**
      * The locale of the command.
@@ -66,7 +96,7 @@ public class Commands implements CommandImplementation {
      */
     public Commands(@NonNull CommandSettings parent) {
         this.commands = new CommandList();
-        this.children = new ArrayList<Commands>();
+        this.children = new ArrayList<ChildHandler>();
         this.locale = new CommandLocale(parent);
     }
 
@@ -83,7 +113,7 @@ public class Commands implements CommandImplementation {
      */
     public Commands() {
         this.commands = new CommandList();
-        this.children = new ArrayList<Commands>();
+        this.children = new ArrayList<ChildHandler>();
         this.locale = new CommandLocale(Environment.getInstance());
     }
 
@@ -106,8 +136,8 @@ public class Commands implements CommandImplementation {
     @NonNull
     public List<Command> getCommands() {
         List<Command> result = this.commands.getCommands();
-        for (Commands child : this.children)
-            result.addAll(child.getCommands());
+        for (ChildHandler child : this.children)
+            result.addAll(child.command.getCommands());
         return result;
     }
 
@@ -119,8 +149,8 @@ public class Commands implements CommandImplementation {
     @NonNull
     public List<Command> getCommand(@NonNull String name) {
         List<Command> result = commands.getCommand(name);
-        for (Commands child : this.children)
-            result.addAll(child.getCommand(name));
+        for (ChildHandler child : this.children)
+            result.addAll(child.command.getCommand(name));
         return result;
     }
 
@@ -171,8 +201,13 @@ public class Commands implements CommandImplementation {
 
         if (result == null || !result) {
             // Query child command handlers.
-            for (Commands child : this.children) {
-                result = child.execute(command, executor, args);
+            for (ChildHandler child : this.children) {
+                // Filter out unwanted handlers.
+                if (!child.filter.canExecute(executor, command, args))
+                    continue;
+
+                // The command that should be executed.
+                result = child.command.execute(command, executor, args);
                 if (result != null && result)
                     return true;
             }
@@ -190,6 +225,18 @@ public class Commands implements CommandImplementation {
     @NonNull
     public Commands newChild() {
         return new Commands(this);
+    }
+
+    /**
+     * Adds the given child to the command handler.
+     * @param commands  The commands.
+     * @param filter    The filter.
+     * @return Itself.
+     */
+    @NonNull
+    public Commands addChild(@NonNull Commands commands, @Nullable ExecutionFilter filter) {
+        this.children.add(new ChildHandler(commands, filter!=null?filter:Commands.DEFAULT_FILTER));
+        return this;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -264,8 +311,9 @@ public class Commands implements CommandImplementation {
 
     /**
      * Registers the base commands.
+     * @return this
      */
-    public void registerBaseCommands() {
+    public Commands registerBaseCommands() {
         HashSet<String> registered = new HashSet<String>();
         for (Command command : this.getCommands()) {
             if (registered.contains(command.getName()))
@@ -276,13 +324,15 @@ public class Commands implements CommandImplementation {
                     this
             );
         }
+        return this;
     }
 
     /**
      * Register the given Commands-Instance as a single command.
      * @param name The given description.
+     * @return this
      */
-    public void registerCommand(String name, final String description) {
+    public Commands registerCommand(String name, final String description) {
         this.getSettings().getEnvironment().getBackend().getHandle().registerCommand(
                 name,
                 new CommandImplementation() {
@@ -298,5 +348,6 @@ public class Commands implements CommandImplementation {
                     }
                 }
         );
+        return this;
     }
 }
