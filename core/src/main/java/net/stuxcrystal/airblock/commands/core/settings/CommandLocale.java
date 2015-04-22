@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.stuxcrystal.airblock.commands.arguments.ArgumentConverter;
 import net.stuxcrystal.airblock.commands.arguments.split.ArgumentSplitter;
+import net.stuxcrystal.airblock.commands.core.exceptions.ExceptionHandlerBag;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
@@ -53,11 +54,17 @@ public class CommandLocale implements CommandSettings {
     public ArgumentSplitter argumentSplitter;
 
     /**
+     * The exception handler
+     */
+    public ExceptionHandlerBag handler;
+
+    /**
      * Creates a new command setting module.
      * @param parent The parent locale
      */
     public CommandLocale(CommandSettings parent) {
         this.parent = parent;
+        this.handler = new ExceptionHandlerBag(parent.getExceptionHandlers());
     }
 
     @Override
@@ -84,5 +91,11 @@ public class CommandLocale implements CommandSettings {
     @Override
     public Logger getLogger() {
         return this.getEnvironment().getLogger();
+    }
+
+    @Nonnull
+    @Override
+    public ExceptionHandlerBag getExceptionHandlers() {
+        return this.handler;
     }
 }

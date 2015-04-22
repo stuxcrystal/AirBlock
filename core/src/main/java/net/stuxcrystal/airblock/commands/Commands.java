@@ -23,6 +23,7 @@ import lombok.NonNull;
 import net.stuxcrystal.airblock.commands.core.CommandImplementation;
 import net.stuxcrystal.airblock.commands.core.ExecutionFilter;
 import net.stuxcrystal.airblock.commands.core.SubCommand;
+import net.stuxcrystal.airblock.commands.core.exceptions.PermissionDenied;
 import net.stuxcrystal.airblock.commands.core.list.Command;
 import net.stuxcrystal.airblock.commands.core.list.CommandList;
 import net.stuxcrystal.airblock.commands.core.list.CommandRegistrar;
@@ -35,7 +36,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * Handles the commands.
@@ -236,6 +236,16 @@ public class Commands implements CommandImplementation {
         return this;
     }
 
+    /**
+     * Adds the given child to the command handler.
+     * @param commands  The commands.
+     * @return Itself.
+     */
+    @Nullable
+    public Commands addChild(@NonNull Commands commands) {
+        return this.addChild(commands, Commands.DEFAULT_FILTER);
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -264,13 +274,13 @@ public class Commands implements CommandImplementation {
         Boolean result;
         try {
             result = this.runCommand(label, executor, arguments);
+
+        } catch(PermissionDenied e) {
+            // Runs the result.
+            result = null;
         } catch (Throwable e) {
-            executor.sendMessage(
-                    this.locale.getEnvironment().getTranslationManager().translate(
-                            executor, TranslationManager.COMMAND_FAILURE, label
-                    )
-            );
-            this.locale.getLogger().log(Level.SEVERE, "Failed to execute: " + label, e);
+            // The exception handler.
+            this.locale.getExceptionHandlers().onException(e, this, executor, label, arguments);
             return;
         }
 

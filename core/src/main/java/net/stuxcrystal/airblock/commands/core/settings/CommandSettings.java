@@ -20,6 +20,7 @@ package net.stuxcrystal.airblock.commands.core.settings;
 
 import net.stuxcrystal.airblock.commands.arguments.ArgumentConverter;
 import net.stuxcrystal.airblock.commands.arguments.split.ArgumentSplitter;
+import net.stuxcrystal.airblock.commands.core.exceptions.ExceptionHandlerBag;
 
 import javax.annotation.Nonnull;
 import java.util.logging.Logger;
@@ -68,5 +69,12 @@ public interface CommandSettings {
      */
     @Nonnull
     public Logger getLogger();
+
+    /**
+     * Returns exception handlers of the environment.
+     * @return excpetion handlers of the environment.
+     */
+    @Nonnull
+    public ExceptionHandlerBag getExceptionHandlers();
 
 }

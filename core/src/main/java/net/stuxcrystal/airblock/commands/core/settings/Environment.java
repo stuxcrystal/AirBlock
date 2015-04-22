@@ -28,6 +28,7 @@ import net.stuxcrystal.airblock.commands.core.backend.BackendHandle;
 import net.stuxcrystal.airblock.commands.contrib.scheduler.Scheduler;
 import net.stuxcrystal.airblock.commands.contrib.scheduler.fallback.FallbackScheduler;
 import net.stuxcrystal.airblock.commands.core.components.ComponentManager;
+import net.stuxcrystal.airblock.commands.core.exceptions.ExceptionHandlerBag;
 import net.stuxcrystal.airblock.commands.core.hooks.HookManager;
 import net.stuxcrystal.airblock.commands.localization.TranslationManager;
 
@@ -98,6 +99,11 @@ public class Environment implements CommandSettings {
     public final Backend backend;
 
     /**
+     * The exception handler
+     */
+    public ExceptionHandlerBag handler = new ExceptionHandlerBag();
+
+    /**
      * Creates a new environment object.
      * @param backend The backend.
      */
@@ -135,5 +141,11 @@ public class Environment implements CommandSettings {
         if (!this.getBackend().hasComponent(Scheduler.class))
             this.registerComponent(Backend.class, new FallbackScheduler(this));
         return this.getBackend().getComponent(Scheduler.class);
+    }
+
+    @Nonnull
+    @Override
+    public ExceptionHandlerBag getExceptionHandlers() {
+        return this.handler;
     }
 }

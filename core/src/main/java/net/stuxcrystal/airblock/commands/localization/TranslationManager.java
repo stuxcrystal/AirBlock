@@ -58,6 +58,11 @@ public class TranslationManager extends MultiValueSource {
     public static final String COMMAND_FAILURE = "An error was detected while executing the command.";
 
     /**
+     * The key that should be used to log exceptions.
+     */
+    public static final String COMMAND_FAILURE_LOG = "The user '{0}'<UUID:{1}> executed the command '/{2}' but failed with an exception.";
+
+    /**
      * The key that should be used when the player executes a command without permission.
      */
     public static final String COMMAND_NO_PERMISSION = "You don't have permission to execute this command.";
@@ -89,6 +94,7 @@ public class TranslationManager extends MultiValueSource {
     static {
         for (String value : new String[] {
                 TranslationManager.COMMAND_FAILURE,
+                TranslationManager.COMMAND_FAILURE_LOG,
                 TranslationManager.COMMAND_NO_PERMISSION,
                 TranslationManager.COMMAND_NOT_FOUND,
                 TranslationManager.NO_DESCRIPTION_AVAILABLE
