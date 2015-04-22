@@ -21,6 +21,8 @@ package net.stuxcrystal.airblock.commands.core.backend;
 import lombok.*;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 
+import java.util.UUID;
+
 /**
  * The wrapper for the handle.
  */
@@ -62,5 +64,13 @@ public abstract class HandleWrapper<T extends Handle> {
      */
     public void addComponent(Object instance) {
         this.getEnvironment().getComponentManager().register(this.getClass(), instance);
+    }
+
+    /**
+     * Returns the unique identifier of the wrapper.
+     * @return The unique identifier.
+     */
+    public UUID getUniqueIdentifier() {
+        return this.getHandle().getUniqueIdentifier();
     }
 }

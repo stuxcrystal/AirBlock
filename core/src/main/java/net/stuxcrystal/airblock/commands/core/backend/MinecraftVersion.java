@@ -8,7 +8,7 @@ import lombok.Getter;
  */
 @Getter
 @EqualsAndHashCode
-public class MinecraftVersion implements Comparable<MinecraftVersion> {
+public final class MinecraftVersion implements Comparable<MinecraftVersion> {
 
     /**
      * <p>The Major Minecraft Version.</p>

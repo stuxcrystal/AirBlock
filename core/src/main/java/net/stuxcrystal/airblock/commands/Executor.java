@@ -26,6 +26,7 @@ import net.stuxcrystal.airblock.commands.contrib.history.History;
 import net.stuxcrystal.airblock.commands.contrib.history.HistoryComponent;
 import net.stuxcrystal.airblock.commands.contrib.sessions.SessionManager;
 import net.stuxcrystal.airblock.commands.contrib.sessions.Sessions;
+import net.stuxcrystal.airblock.commands.core.backend.MinecraftVersion;
 import net.stuxcrystal.airblock.commands.core.settings.CommandSettings;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 
@@ -33,6 +34,7 @@ import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * <p>Defines the executor.</p>
@@ -168,9 +170,34 @@ public class Executor extends HandleWrapper<ExecutorHandle<?>> {
         return this.getComponent(Sessions.class);
     }
 
+    /**
+     * Returns the command history of the player.
+     * @return The command history.
+     */
     public History getHistory() {
         if (!this.hasComponent(History.class))
             this.getEnvironment().getComponentManager().register(Executor.class, new HistoryComponent(this.getEnvironment()));
         return this.getComponent(History.class);
+    }
+
+    /**
+     * The unique executor identifier.
+     * @return The unique executor identifier.
+     */
+    public String getUniqueExecutorIdentifier() {
+        // Since minecraft uses from 1.8 onward the uuid, we will try to use the uuid.
+        if (this.getEnvironment().getBackend().getMinecraftVersion().compareTo(new MinecraftVersion(1,7)) == 1) {
+            if (this.isConsole())
+                // If we use the console:
+                // We enforce the console.
+                return "CONSOLE";
+
+            UUID uuid = this.getHandle().getUniqueIdentifier();
+            if (uuid != null)
+                return uuid.toString();
+        }
+
+        // Revert to default name.
+        return this.getName();
     }
 }

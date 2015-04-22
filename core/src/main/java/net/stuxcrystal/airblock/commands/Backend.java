@@ -91,6 +91,27 @@ public class Backend extends HandleWrapper<BackendHandle<?,?>> {
                 return this.wrap(handle);
         return null;
     }
+
+    /**
+     * Returns the executor that uses the unique identifier of the current minecraft
+     * version.
+     *
+     * @param name  The name of the backend.
+     * @return The executor.
+     */
+    public Executor getExecutorUnique(@Nullable String name) {
+        if (StringUtils.isEmpty(name) || name.equalsIgnoreCase("console"))
+            return this.getConsole();
+
+        ExecutorHandle<?>[] handles = this.getHandle().getExecutors();
+        for (ExecutorHandle handle : handles) {
+            Executor executor = handle.wrap(this.getEnvironment());
+            if (executor.getUniqueExecutorIdentifier().equals(name))
+                return executor;
+        }
+        return null;
+    }
+
     /**
      * Returns the logger for the backend.
      * @return The logger for the backend.
