@@ -28,7 +28,7 @@ public class LocalStorage extends SingleStringSeparatedLocationStorage {
      *
      * @param suffix The suffix.
      */
-    protected LocalStorage(File baseDir, String suffix, FileType ft) {
+    public LocalStorage(File baseDir, String suffix, FileType ft) {
         super(File.separator, suffix);
         this.baseDir = baseDir;
         this.ft = ft;

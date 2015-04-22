@@ -123,4 +123,10 @@ public abstract class BackendHandle<T, E> extends Handle<T> {
     public final UUID getUniqueIdentifier() {
         return null;
     }
+
+    /**
+     * Returns the current minecraft version.
+     * @return The current minecraft version.
+     */
+    public abstract MinecraftVersion getVersion();
 }

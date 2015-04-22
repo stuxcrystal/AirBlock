@@ -69,7 +69,7 @@ public class SubCommand implements Command {
     @Override
     public void execute(@NonNull Executor executor, @NonNull String rawArguments) {
         String[] splitter = SubCommand.splitArguments(rawArguments);
-        this.commands.execute(splitter[0], executor, splitter[1]);
+        this.commands.runCommand(splitter[0], executor, splitter[1]);
     }
 
     public static String[] splitArguments(String rawArguments) {

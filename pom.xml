@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ AirBlock - Framework for Multi-Platform Minecraft-Plugins.
-  ~ Copyright (C) 2014 stux!
+  ~ Copyright (C) 2014,2015 stux!
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
     <modules>
         <module>core</module>
         <module>canary</module>
+        <module>bukkit</module>
     </modules>
 
     <!-- Repository fir SimpleDev. -->

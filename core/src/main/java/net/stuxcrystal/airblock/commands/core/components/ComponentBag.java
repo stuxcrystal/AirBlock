@@ -1,6 +1,6 @@
 /*
  * AirBlock - Framework for Multi-Platform Minecraft-Plugins.
- * Copyright (C) 2014 stux!
+ * Copyright (C) 2014, 2015 stux!
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -188,7 +188,10 @@ public class ComponentBag {
      */
     <T> T invoke(Method method, Environment environment, Object instance, Object... parameters) throws Throwable {
         Component component = method.getAnnotation(Component.class);
-        Component.ExecutionThread syncstate = (component!=null)?component.thread(): Component.ExecutionThread.SAME_THREAD;
+        Component.ExecutionThread syncstate = Component.ExecutionThread.SAME_THREAD;
+        if (component != null) {
+            syncstate = (component!=null)?component.thread(): Component.ExecutionThread.SAME_THREAD;
+        }
         return syncstate.invoke(environment, method, instance, parameters);
     }
 }

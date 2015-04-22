@@ -25,6 +25,7 @@ import net.stuxcrystal.airblock.commands.contrib.threads.ThreadManager;
 import net.stuxcrystal.airblock.commands.core.backend.BackendHandle;
 import net.stuxcrystal.airblock.commands.core.backend.ExecutorHandle;
 import net.stuxcrystal.airblock.commands.core.backend.HandleWrapper;
+import net.stuxcrystal.airblock.commands.core.backend.MinecraftVersion;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 import org.apache.commons.lang3.StringUtils;
 
@@ -128,6 +129,14 @@ public class Backend extends HandleWrapper<BackendHandle<?,?>> {
      */
     public boolean isInMainThread() {
         return this.getThreadManager().isInMainThread();
+    }
+
+    /**
+     * Returns the minecraft version.
+     * @return The minecraft version.
+     */
+    public MinecraftVersion getMinecraftVersion() {
+        return this.getHandle().getVersion();
     }
 
 }

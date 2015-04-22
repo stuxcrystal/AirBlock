@@ -30,6 +30,7 @@ import net.canarymod.tasks.ServerTask;
 import net.stuxcrystal.airblock.commands.core.backend.BackendHandle;
 import net.stuxcrystal.airblock.commands.core.backend.ExecutorHandle;
 import net.stuxcrystal.airblock.commands.core.CommandImplementation;
+import net.stuxcrystal.airblock.commands.core.backend.MinecraftVersion;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -147,5 +148,10 @@ public class CanaryServerBackend extends BackendHandle<Plugin, MessageReceiver> 
         } catch (CommandDependencyException e) {
             this.getLogger().log(Level.WARNING, "Failed to register command", e);
         }
+    }
+
+    @Override
+    public MinecraftVersion getVersion() {
+        return MinecraftVersion.fromString(Canary.getImplementationVersion().split("-")[0]);
     }
 }

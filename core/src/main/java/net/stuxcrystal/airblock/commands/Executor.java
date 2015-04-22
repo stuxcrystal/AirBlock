@@ -146,7 +146,7 @@ public class Executor extends HandleWrapper<ExecutorHandle<?>> {
      */
     public boolean hasPermission(@NonNull String node) {
         if (!this.hasComponent(Permissions.class))
-            return this.isAdmin();
+            return this.isAdmin() || this.isConsole();
         return this.getComponent(Permissions.class).hasPermission(node);
     }
 

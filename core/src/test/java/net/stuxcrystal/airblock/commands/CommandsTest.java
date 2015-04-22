@@ -35,13 +35,20 @@ import static org.mockito.Mockito.*;
  */
 public class CommandsTest {
 
+    public Commands mockCommands(CommandList list, List<Commands> commands) {
+        Commands cmds = new Commands(list, new ArrayList(), mock(Environment.class));
+        for (Commands command : commands)
+            cmds.addChild(command, Commands.DEFAULT_FILTER);
+        return cmds;
+    }
+
     @Test
     public void testCommandDelegation() {
         CommandList cl = mock(CommandList.class);
         when(cl.execute(any(String.class), any(Executor.class), any(String.class))).thenReturn(false);
 
-        Commands cmds = new Commands(cl, new ArrayList<Commands>(), mock(Environment.class));
-        Assert.assertFalse("Command-Delegation reported that a command has been executed.", cmds.execute("cmd", mock(Executor.class), ""));
+        Commands cmds = mockCommands(cl, new ArrayList<Commands>());
+        Assert.assertFalse("Command-Delegation reported that a command has been executed.", cmds.runCommand("cmd", mock(Executor.class), ""));
 
         // Verify that we tried to execute the commands test.
         verify(cl).execute(eq("cmd"), any(Executor.class), any(String.class));
@@ -53,17 +60,17 @@ public class CommandsTest {
         List<Commands> t_cmds = new ArrayList<Commands>();
         for (int i = 0; i<10; i++) {
             Commands mcl = mock(Commands.class);
-            when(mcl.execute(any(String.class), any(Executor.class), any(String.class))).thenReturn(false);
+            when(mcl.runCommand(any(String.class), any(Executor.class), any(String.class))).thenReturn(false);
             t_cmds.add(mcl);
         }
 
         Commands t_cmd = mock(Commands.class);
-        when(t_cmd.execute(any(String.class), any(Executor.class), any(String.class))).thenReturn(true);
+        when(t_cmd.runCommand(any(String.class), any(Executor.class), any(String.class))).thenReturn(true);
 
         List<Commands> n_cmds = new ArrayList<Commands>();
         for (int i = 0; i<10; i++) {
             Commands mcl = mock(Commands.class);
-            when(mcl.execute(any(String.class), any(Executor.class), any(String.class))).thenReturn(false);
+            when(mcl.runCommand(any(String.class), any(Executor.class), any(String.class))).thenReturn(false);
             n_cmds.add(mcl);
         }
 
@@ -75,17 +82,17 @@ public class CommandsTest {
         CommandList fcl = mock(CommandList.class);
         when(fcl.execute(any(String.class), any(Executor.class), any(String.class))).thenReturn(false);
 
-        Commands tCmd = new Commands(fcl, a_cmds, mock(Environment.class));
-        Assert.assertTrue("Command delegation reported that there was no command.", tCmd.execute("cmd", mock(Executor.class), ""));
+        Commands tCmd = mockCommands(fcl, a_cmds);
+        Assert.assertTrue("Command delegation reported that there was no command.", tCmd.runCommand("cmd", mock(Executor.class), ""));
 
         for (Commands commands : t_cmds) {
-            verify(commands, times(1)).execute(eq("cmd"), any(Executor.class), any(String.class));
+            verify(commands, times(1)).runCommand(eq("cmd"), any(Executor.class), any(String.class));
         }
 
-        verify(t_cmd, times(1)).execute(eq("cmd"), any(Executor.class), any(String.class));
+        verify(t_cmd, times(1)).runCommand(eq("cmd"), any(Executor.class), any(String.class));
 
         for (Commands commands : n_cmds) {
-            verify(commands, never()).execute(any(String.class), any(Executor.class), any(String.class));
+            verify(commands, never()).runCommand(any(String.class), any(Executor.class), any(String.class));
         }
 
     }

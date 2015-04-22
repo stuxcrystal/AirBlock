@@ -22,7 +22,9 @@ import lombok.NonNull;
 import net.stuxcrystal.airblock.commands.Executor;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 
+import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
+import java.util.UUID;
 
 /**
  * Defines the handle for the executor.
@@ -48,7 +50,8 @@ public abstract class ExecutorHandle<T> extends Handle<T> {
     }
 
     /**
-     * Returns the value of the executor.
+     * <p>Returns the value of the executor.</p>
+     * <p><b>WARNING: Users may change their names. Make sure you do not use this value as a persistent name.</b></p>
      * @return The value of the executor.
      */
     public abstract String getName();
@@ -80,4 +83,21 @@ public abstract class ExecutorHandle<T> extends Handle<T> {
      * @return The address of the executor.
      */
     public abstract InetSocketAddress getAddress();
+
+    /**
+     * <p>Returns a unique identifier that is used on all handles to check if they are
+     * essentially the same.</p>
+     *
+     * <p>
+     *     The UUID on Console object will be random! Otherwise it will return the global
+     *     unique identifier for the player.
+     * </p>
+     *
+     * <p>
+     *     If this function returns {@code null} it won't make sense to use the function.
+     * </p>
+     * @return The unique identifier.
+     */
+    @Nullable
+    public abstract UUID getUniqueIdentifier();
 }

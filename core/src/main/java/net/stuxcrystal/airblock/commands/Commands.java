@@ -30,7 +30,6 @@ import net.stuxcrystal.airblock.commands.core.settings.CommandLocale;
 import net.stuxcrystal.airblock.commands.core.settings.CommandSettings;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 import net.stuxcrystal.airblock.commands.localization.TranslationManager;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -183,8 +182,9 @@ public class Commands implements CommandImplementation {
      * @return {@code true} if the command has been found and executed.
      *         {@code null} if the command has been found but the user did not have permission.
      */
-    public Boolean execute(@NonNull String command, @NonNull Executor executor, @NonNull String args) {
+    public Boolean runCommand(@NonNull String command, @NonNull Executor executor, @NonNull String args) {
         // Make sure we push the context of the command-system to the executor.
+        // We will not pop the context - EVER!
         executor.pushContext(this.locale);
 
         Boolean result = false;
@@ -196,9 +196,6 @@ public class Commands implements CommandImplementation {
             result = null;
         }
 
-        // Make sure we pop it.
-        executor.popContext();
-
         if (result == null || !result) {
             // Query child command handlers.
             for (ChildHandler child : this.children) {
@@ -207,7 +204,7 @@ public class Commands implements CommandImplementation {
                     continue;
 
                 // The command that should be executed.
-                result = child.command.execute(command, executor, args);
+                result = child.command.runCommand(command, executor, args);
                 if (result != null && result)
                     return true;
             }
@@ -266,7 +263,7 @@ public class Commands implements CommandImplementation {
     public void execute(Executor executor, String label, String arguments) {
         Boolean result;
         try {
-            result = this.execute(label, executor, arguments);
+            result = this.runCommand(label, executor, arguments);
         } catch (Throwable e) {
             executor.sendMessage(
                     this.locale.getEnvironment().getTranslationManager().translate(
@@ -339,7 +336,7 @@ public class Commands implements CommandImplementation {
                     @Override
                     public void execute(Executor executor, String label, String arguments) {
                         String[] parsed = SubCommand.splitArguments(arguments);
-                        Commands.this.execute(parsed[0], executor, arguments);
+                        Commands.this.runCommand(parsed[0], executor, arguments);
                     }
 
                     @Override

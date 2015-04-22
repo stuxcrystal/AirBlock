@@ -19,6 +19,7 @@ import java.util.Arrays;
 public class InjectingMethodCallingStrategy implements CommandCallingStrategy {
 
     private static final Step[] STEPS = {
+            new FlagStep(),
             new ArgumentStep(),
             new ScopeObjectStep(),
             new ComponentStep(),
