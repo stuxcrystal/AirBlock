@@ -129,4 +129,10 @@ public abstract class BackendHandle<T, E> extends Handle<T> {
      * @return The current minecraft version.
      */
     public abstract MinecraftVersion getVersion();
+
+    /**
+     * Returns the name of the plugin.
+     * @return The name of the plugin.
+     */
+    public abstract String getName();
 }

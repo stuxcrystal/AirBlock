@@ -154,4 +154,9 @@ public class CanaryServerBackend extends BackendHandle<Plugin, MessageReceiver> 
     public MinecraftVersion getVersion() {
         return MinecraftVersion.fromString(Canary.getImplementationVersion().split("-")[0]);
     }
+
+    @Override
+    public String getName() {
+        return this.getHandle().getName();
+    }
 }
