@@ -19,6 +19,7 @@
 package net.stuxcrystal.airblock.commands.arguments.list;
 
 import net.stuxcrystal.airblock.commands.Executor;
+import net.stuxcrystal.airblock.commands.core.settings.Environment;
 import net.stuxcrystal.airblock.utils.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;

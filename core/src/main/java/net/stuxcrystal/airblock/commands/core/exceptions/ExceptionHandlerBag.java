@@ -2,7 +2,6 @@ package net.stuxcrystal.airblock.commands.core.exceptions;
 
 import net.stuxcrystal.airblock.commands.Commands;
 import net.stuxcrystal.airblock.commands.Executor;
-import net.stuxcrystal.airblock.commands.arguments.list.ArgumentList;
 import net.stuxcrystal.airblock.commands.localization.TranslationManager;
 
 import java.util.HashMap;

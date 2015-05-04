@@ -24,6 +24,7 @@ import net.stuxcrystal.airblock.commands.core.backend.BackendHandle;
 import net.stuxcrystal.airblock.commands.core.backend.ExecutorHandle;
 import net.stuxcrystal.airblock.commands.core.backend.Handle;
 import net.stuxcrystal.airblock.commands.core.CommandImplementation;
+import net.stuxcrystal.airblock.commands.core.backend.MinecraftVersion;
 import net.stuxcrystal.airblock.commands.core.settings.Environment;
 import org.junit.Test;
 
@@ -91,6 +92,16 @@ public class ComponentBagTest {
         @Override
         public void registerCommand(String name, CommandImplementation implementation) {
 
+        }
+
+        @Override
+        public MinecraftVersion getVersion() {
+            return MinecraftVersion.fromString("1.4.2");
+        }
+
+        @Override
+        public String getName() {
+            return "Fake";
         }
 
         @Override

@@ -112,6 +112,7 @@ public class ArgumentList extends ArgumentContainer {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <E> E getRaw(int index, Type cls, String def) throws NumberFormatException {
         // Find the real index.
         int i = this.getRealIndex(index);
@@ -124,6 +125,10 @@ public class ArgumentList extends ArgumentContainer {
             value = def;
         } else {
             value = this.values[i];
+        }
+
+        if (cls == String.class) {
+            return (E) value;
         }
 
         // Parse the values.
