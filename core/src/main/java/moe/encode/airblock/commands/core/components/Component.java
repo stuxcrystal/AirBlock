@@ -46,6 +46,7 @@ public @interface Component {
      */
     public enum ExecutionStrategy {
 
+
         /**
          * Do not synchronize the calls in any way.
          */
@@ -68,35 +69,7 @@ public @interface Component {
 
             @Override
             public <T> T invoke(Method method, Object instance, Object... parameters) throws Throwable {
-                // Get the current lock for the component.
-                ReentrantLock lock;
-                synchronized (this.locks) {
-                    if (this.locks.containsKey(method))
-                        lock = this.locks.get(method);
-                    else
-                        this.locks.put(method, lock = new ReentrantLock(true));
-                }
-
-                T result;
-
-                // Lock the lock so no thread can call the method.
-                lock.lock();
-                try {
-                    // Invoke the method.
-                    result = ReflectionUtils.invoke(method, instance, parameters);
-                } finally {
-                    // Unlock the method.
-                    lock.unlock();
-                }
-
-                // Remove the lock if it is not used anymore.
-                synchronized (this.locks) {
-                    if (lock.isHeldByCurrentThread() && lock.getHoldCount() <= 0) {
-                        this.locks.remove(method);
-                    }
-                }
-
-                return result;
+                return call(this.locks, method, method, instance, parameters);
             }
         },
 
@@ -113,36 +86,7 @@ public @interface Component {
             @Override
             public <T> T invoke(Method method, Object instance, Object... parameters) throws Throwable {
                 Class<?> cls = method.getDeclaringClass();
-
-                // Get the current lock for the component.
-                ReentrantLock lock;
-                synchronized (this.locks) {
-                    if (this.locks.containsKey(cls))
-                        lock = this.locks.get(cls);
-                    else
-                        this.locks.put(cls, lock = new ReentrantLock(true));
-                }
-
-                T result;
-
-                // Lock the lock so no thread can call the method.
-                lock.lock();
-                try {
-                    // Invoke the method.
-                    result = ReflectionUtils.invoke(method, instance, parameters);
-                } finally {
-                    // Unlock the method.
-                    lock.unlock();
-                }
-
-                // Remove the lock if it is not used anymore.
-                synchronized (this.locks) {
-                    if (lock.isHeldByCurrentThread() && lock.getHoldCount() <= 0) {
-                        this.locks.remove(cls);
-                    }
-                }
-
-                return result;
+                return call(this.locks, cls, method, instance, parameters);
             }
         },
 
@@ -160,39 +104,75 @@ public @interface Component {
 
             @Override
             public <T> T invoke(Method method, Object instance, Object... parameters) throws Throwable {
-                // Get the current lock for the component.
-                ReentrantLock lock;
-                synchronized (this.locks) {
-                    if (this.locks.containsKey(instance))
-                        lock = this.locks.get(instance);
-                    else
-                        this.locks.put(instance, lock = new ReentrantLock(true));
-                }
-
-                T result;
-
-                // Lock the lock so no thread can call the method.
-                lock.lock();
-                try {
-                    // Invoke the method.
-                    result = ReflectionUtils.invoke(method, instance, parameters);
-                } finally {
-                    // Unlock the method.
-                    lock.unlock();
-                }
-
-                // Remove the lock if it is not used anymore.
-                synchronized (this.locks) {
-                    if (lock.isHeldByCurrentThread() && lock.getHoldCount() <= 0) {
-                        this.locks.remove(instance);
-                    }
-                }
-
-                return result;
+                return call(this.locks, instance, method, instance, parameters);
             }
         },
 
         ;
+
+        /**
+         * Synchronized implementation.
+         *
+         * @param locks       The map of licks.
+         * @param key         The keys.
+         * @param method      The method.
+         * @param instance    The instance.
+         * @param parameters  The parameters.
+         * @param <R>         The result type.
+         * @param <T>         The key type.
+         * @return The result of the invocation.
+         * @throws Throwable If an exception is thrown.
+         */
+        protected <R, T> R call(Map<T, ReentrantLock> locks, T key, Method method, Object instance, Object... parameters) throws Throwable {
+            ReentrantLock lock = this.lockOn(locks, key);
+            try {
+                return ReflectionUtils.invoke(method, instance, parameters);
+            } finally {
+                this.lockOff(lock, locks, key);
+            }
+        }
+
+        /**
+         * Locks the parameter on the given object and locks the lock.
+         *
+         * @param locks   The list of locks.
+         * @param value   The key to search for the current lock.
+         * @param <T> The type of the key.
+         * @return The actual lock.
+         */
+        protected <T> ReentrantLock lockOn(Map<T, ReentrantLock> locks, T value) {
+            // Get the current lock for the component.
+            ReentrantLock lock;
+            synchronized (locks) {
+                if (locks.containsKey(value))
+                    lock = locks.get(value);
+                else
+                    locks.put(value, lock = new ReentrantLock(true));
+            }
+
+            lock.lock();
+
+            return lock;
+        }
+
+        /**
+         * Locks the parameter on the given object and locks the lock.
+         *
+         * @param lock    The lock to unlock.
+         * @param locks   The list of locks.
+         * @param value   The key to search for the current lock.
+         * @param <T> The type of the key.
+         */
+        protected <T> void lockOff(ReentrantLock lock, Map<T, ReentrantLock> locks, T value) {
+            lock.unlock();
+
+            // Remove the lock if it is not used anymore.
+            synchronized (locks) {
+                if (lock.isHeldByCurrentThread() && lock.getHoldCount() <= 0) {
+                    locks.remove(value);
+                }
+            }
+        }
 
         /**
          * Executes the method.
