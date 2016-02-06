@@ -68,7 +68,7 @@ public @interface Command {
     }
 
     /**
-     * How should the
+     * How should the command arguments be parsed.
      */
     public static enum Strategy {
 
@@ -130,6 +130,22 @@ public @interface Command {
     }
 
     /**
+     * The maximal amount of arguments<p />
+     *
+     * <strong>Note:</strong> Ignored when using the raw strategy.
+     * @return The maximal length
+     */
+    public int maxLength() default -1;
+
+    /**
+     * The minimal amount of arguments<p />
+     *
+     * <strong>Note:</strong> Ignored when using the raw strategy.
+     * @return The minimal length
+     */
+    public int minLength() default -1;
+
+    /**
      * Returns the value of the command.
      * @return The value of the command.
      */
@@ -172,5 +188,9 @@ public @interface Command {
      */
     public boolean useFlags() default true;
 
+    /**
+     * The strategy.
+     * @return The strategy.
+     */
     public Strategy strategy() default Strategy.DEFAULT;
 }

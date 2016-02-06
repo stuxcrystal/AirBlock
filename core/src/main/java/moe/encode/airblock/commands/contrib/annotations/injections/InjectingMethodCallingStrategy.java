@@ -34,7 +34,11 @@ public class InjectingMethodCallingStrategy implements CommandCallingStrategy {
 
     @Override
     public void call(AnnotationCommand command, Executor executor, String raw) {
-        Scope scope = new Scope(this.method, this.object, command, new ArgumentList(raw, executor), executor);
+        ArgumentList list = new ArgumentList(raw, executor);
+        if (!command.checkArgumentLength(executor, list))
+            return;
+
+        Scope scope = new Scope(this.method, this.object, command, list, executor);
         Object[] parameters = new Object[this.method.getParameterTypes().length];
         for (Step step : InjectingMethodCallingStrategy.STEPS)
             parameters = step.inject(scope, parameters);

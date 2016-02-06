@@ -73,6 +73,11 @@ public class TranslationManager extends MultiValueSource {
     public static final String NO_DESCRIPTION_AVAILABLE = "The command does not have a description.";
 
     /**
+     * Invalid usage of the command.
+     */
+    public static final String INVALID_COMMAND_USAGE = "Invalid command usage.";
+
+    /**
      * Contains the translation resolver.
      */
     @Getter(AccessLevel.PUBLIC)
@@ -97,7 +102,8 @@ public class TranslationManager extends MultiValueSource {
                 TranslationManager.COMMAND_FAILURE_LOG,
                 TranslationManager.COMMAND_NO_PERMISSION,
                 TranslationManager.COMMAND_NOT_FOUND,
-                TranslationManager.NO_DESCRIPTION_AVAILABLE
+                TranslationManager.NO_DESCRIPTION_AVAILABLE,
+                TranslationManager.INVALID_COMMAND_USAGE
         }) {
             TranslationManager.DEFAULT_VALUES.put(value, value);
         }

@@ -22,7 +22,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import moe.encode.airblock.commands.Executor;
+import moe.encode.airblock.commands.arguments.list.ArgumentList;
 import moe.encode.airblock.commands.contrib.Permissions;
+import moe.encode.airblock.commands.localization.TranslationManager;
+import moe.encode.airblock.utils.ChatColor;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
@@ -123,5 +126,27 @@ public class AnnotationCommand implements moe.encode.airblock.commands.core.list
             System.err.println(message);
             throwable.printStackTrace();
         }
+    }
+
+    public boolean checkArgumentLength(Executor executor, ArgumentList list) {
+        if (this.getCommand().maxLength() > -1) {
+            if (list.size() > this.getCommand().maxLength()) {
+                executor.sendMessage(ChatColor.RED + executor.getEnvironment().getTranslationManager().translate(
+                        executor, TranslationManager.INVALID_COMMAND_USAGE
+                ));
+                return false;
+            }
+        }
+
+        if (this.getCommand().minLength() > -1) {
+            if (list.size() < this.getCommand().minLength()) {
+                executor.sendMessage(ChatColor.RED + executor.getEnvironment().getTranslationManager().translate(
+                        executor, TranslationManager.INVALID_COMMAND_USAGE
+                ));
+                return false;
+            }
+        }
+
+        return true;
     }
 }

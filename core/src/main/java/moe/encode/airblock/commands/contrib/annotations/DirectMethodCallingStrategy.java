@@ -5,6 +5,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import moe.encode.airblock.commands.Executor;
 import moe.encode.airblock.commands.arguments.list.ArgumentList;
+import moe.encode.airblock.commands.localization.TranslationManager;
+import moe.encode.airblock.utils.ChatColor;
 import moe.encode.airblock.utils.ReflectionUtils;
 
 import java.lang.reflect.Method;
@@ -31,6 +33,10 @@ public class DirectMethodCallingStrategy implements CommandCallingStrategy {
     @Override
     public void call(AnnotationCommand command, Executor executor, String raw) {
         ArgumentList list = new ArgumentList(raw, executor);
+
+        if (!command.checkArgumentLength(executor, list))
+            return;
+
         try {
             ReflectionUtils.invoke(this.method, this.object, list);
         } catch (Throwable throwable) {
