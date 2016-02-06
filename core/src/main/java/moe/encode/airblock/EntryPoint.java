@@ -66,6 +66,8 @@ public abstract class EntryPoint {
      * Called when the plugin starts.
      */
     public final void start() {
+        this.environment.getServiceManager().registerServiceRaw(this.getClass(), this);
+        this.environment.getServiceManager().registerService(EntryPoint.class, this);
         this.onStart();
     }
 
@@ -73,11 +75,18 @@ public abstract class EntryPoint {
      * Called when the plugin stops.
      */
     public final void stop() {
+        // Fire a shutdown event.
         this.getEnvironment().getHookManager().call(new ShutdownHook(this.getEnvironment()));
+
+        // Stop the actual workings.
         this.onStop();
 
         // Clear all hooks that have been registered.
         this.getEnvironment().getHookManager().clear();
+
+        // Unregister the entry-point.
+        this.environment.getServiceManager().unregisterService(EntryPoint.class);
+        this.environment.getServiceManager().unregisterService(this.getClass());
     }
 
     /**
