@@ -22,6 +22,7 @@ import lombok.Data;
 import lombok.NonNull;
 import moe.encode.airblock.commands.core.backend.BackendHandle;
 import moe.encode.airblock.commands.core.components.ComponentManager;
+import moe.encode.airblock.commands.core.services.ServiceManager;
 import moe.encode.airblock.commands.localization.TranslationManager;
 import moe.encode.airblock.commands.arguments.ArgumentConverter;
 import moe.encode.airblock.commands.arguments.split.ArgumentSplitter;
@@ -91,6 +92,12 @@ public class Environment implements CommandSettings {
      */
     @NonNull
     public HookManager hookManager = new HookManager(this);
+
+    /**
+     * Added service manager.
+     */
+    @NonNull
+    public ServiceManager serviceManager = new ServiceManager();
 
     /**
      * The actual backend.
