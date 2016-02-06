@@ -246,6 +246,25 @@ public class Commands implements CommandImplementation {
         return this.addChild(commands, Commands.DEFAULT_FILTER);
     }
 
+    /**
+     * Removes a given child.
+     * @param commands
+     */
+    public void removeChild(@NonNull Commands commands) {
+        ChildHandler hndl = null;
+        for (ChildHandler handler : this.children) {
+            if (handler.command.equals(commands)) {
+                hndl = handler;
+                break;
+            }
+        }
+
+        if (hndl == null)
+            return;
+
+        this.children.remove(hndl);
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
