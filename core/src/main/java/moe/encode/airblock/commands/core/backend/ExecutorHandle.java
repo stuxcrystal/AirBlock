@@ -56,6 +56,12 @@ public abstract class ExecutorHandle<T> extends Handle<T> {
         return environment.getBackend().wrap(this);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public <W extends HandleWrapper<? extends Handle<T>>> W wrap() {
+        return (W)this.wrap(Environment.getInstance());
+    }
+
     /**
      * <p>Returns the value of the executor.</p>
      * <p><b>WARNING: Users may change their names. Make sure you do not use this value as a persistent name.</b></p>

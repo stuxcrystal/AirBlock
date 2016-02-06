@@ -135,4 +135,11 @@ public abstract class BackendHandle<T, E> extends Handle<T> {
      * @return The name of the plugin.
      */
     public abstract String getName();
+
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <W extends HandleWrapper<? extends Handle<T>>> W wrap() {
+        return (W)Environment.getInstance().getBackend();
+    }
 }

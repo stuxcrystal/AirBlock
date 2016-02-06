@@ -83,4 +83,10 @@ public abstract class Handle<T> {
         return thisUUID.equals(((Handle) other).getUniqueIdentifier());
     }
 
+    /**
+     * Adds support for handles.
+     * @return The wrapper for the handle.
+     */
+    public abstract <W extends HandleWrapper<? extends Handle<T>>> W wrap();
+
 }

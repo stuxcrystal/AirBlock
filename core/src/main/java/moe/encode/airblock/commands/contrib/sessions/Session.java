@@ -21,6 +21,9 @@ package moe.encode.airblock.commands.contrib.sessions;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import moe.encode.airblock.commands.Executor;
+import moe.encode.airblock.commands.core.backend.Handle;
+import moe.encode.airblock.commands.core.backend.HandleWrapper;
 import moe.encode.airblock.commands.core.settings.Environment;
 
 /**
@@ -55,6 +58,12 @@ public abstract class Session {
     private boolean isExpired = false;
 
     /**
+     * Registers the new handle.
+     */
+    @Getter
+    private Handle<?> handle = null;
+
+    /**
      * Constructs a session object.
      */
     public Session() { }
@@ -62,8 +71,9 @@ public abstract class Session {
     /**
      * Initializes the Session-Object.
      */
-    final void initialize(@NonNull Environment environment) {
+    final void initialize(@NonNull Environment environment, @NonNull Handle<?> executor) {
         this.environment = environment;
+        this.handle = executor;
         this.updateAccessTime();
     }
 
@@ -102,6 +112,18 @@ public abstract class Session {
         boolean expired = System.currentTimeMillis() - this.lastAccessTime > this.expireTime;
         if (expired) this.isExpired = true;
         return expired;
+    }
+
+    /**
+     * Add the owner.
+     *
+     * @param <R>   The handle type.
+     * @param <T>   The handle
+     * @return The type.
+     */
+    @SuppressWarnings("unchecked")
+    public <R extends Handle<?>, T extends HandleWrapper<R>> T getOwner() {
+        return (T)this.handle.wrap();
     }
 
     /**
