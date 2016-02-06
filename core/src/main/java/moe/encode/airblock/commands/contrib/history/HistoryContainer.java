@@ -18,6 +18,7 @@
 
 package moe.encode.airblock.commands.contrib.history;
 
+import moe.encode.airblock.commands.Executor;
 import moe.encode.airblock.commands.contrib.sessions.Session;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import java.util.List;
 /**
  * Defines a session that can undoAction and redoAction things.
  */
-public class HistoryContainer extends Session {
+public class HistoryContainer extends Session<Executor> {
 
     /**
      * Stores an action.

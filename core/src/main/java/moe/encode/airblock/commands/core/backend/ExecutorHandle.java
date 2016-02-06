@@ -58,8 +58,8 @@ public abstract class ExecutorHandle<T> extends Handle<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <W extends HandleWrapper<? extends Handle<T>>> W wrap() {
-        return (W)this.wrap(Environment.getInstance());
+    public Executor wrap() {
+        return this.wrap(Environment.getInstance());
     }
 
     /**

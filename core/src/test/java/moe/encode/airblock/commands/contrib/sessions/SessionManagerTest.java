@@ -18,7 +18,9 @@
 
 package moe.encode.airblock.commands.contrib.sessions;
 
+import moe.encode.airblock.commands.Executor;
 import moe.encode.airblock.commands.core.backend.Handle;
+import moe.encode.airblock.commands.core.backend.HandleWrapper;
 import moe.encode.airblock.commands.core.settings.Environment;
 import org.junit.Test;
 
@@ -51,6 +53,14 @@ public class SessionManagerTest {
         @Override
         public UUID getUniqueIdentifier() {
             return uuid;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public HandleWrapper<? extends Handle> wrap() {
+            HandleWrapper wrapper = mock(HandleWrapper.class);
+            when(wrapper.getHandle()).thenReturn(this);
+            return wrapper;
         }
     }
 
@@ -99,6 +109,18 @@ public class SessionManagerTest {
         manager.getSession(b, SessionImpl.class);
         assertEquals(2, manager.getSessions(a).size());
         assertEquals(1, manager.getSessions(b).size());
+    }
+
+    @Test
+    public void testSessionOwnership() throws Exception {
+        UUID uuid = UUID.randomUUID();
+        Handle a = this.createMockHandle(uuid);
+
+        SessionManager manager = new SessionManager(mock(Environment.class));
+        manager.getSession(a, SessionImpl.class);
+
+        SessionImpl impl = manager.getSession(this.createMockHandle(uuid), SessionImpl.class);
+        assertEquals(a, impl.getOwner().getHandle());
     }
 
     /**

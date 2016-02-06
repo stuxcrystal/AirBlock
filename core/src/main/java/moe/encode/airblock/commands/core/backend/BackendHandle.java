@@ -19,6 +19,7 @@
 package moe.encode.airblock.commands.core.backend;
 
 import lombok.NonNull;
+import moe.encode.airblock.commands.Backend;
 import moe.encode.airblock.commands.core.CommandImplementation;
 import moe.encode.airblock.commands.core.settings.Environment;
 
@@ -139,7 +140,7 @@ public abstract class BackendHandle<T, E> extends Handle<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <W extends HandleWrapper<? extends Handle<T>>> W wrap() {
-        return (W)Environment.getInstance().getBackend();
+    public final Backend wrap() {
+        return Environment.getInstance().getBackend();
     }
 }

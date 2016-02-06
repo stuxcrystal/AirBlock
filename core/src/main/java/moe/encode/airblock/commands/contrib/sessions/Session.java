@@ -32,7 +32,7 @@ import moe.encode.airblock.commands.core.settings.Environment;
  * The session implementation MUST have a constructor that does not have
  * any parameters.
  */
-public abstract class Session {
+public abstract class Session<T extends HandleWrapper<?>> {
 
     /**
      * Contains the environment of the session
@@ -117,12 +117,10 @@ public abstract class Session {
     /**
      * Add the owner.
      *
-     * @param <R>   The handle type.
-     * @param <T>   The handle
      * @return The type.
      */
     @SuppressWarnings("unchecked")
-    public <R extends Handle<?>, T extends HandleWrapper<R>> T getOwner() {
+    public T getOwner() {
         return (T)this.handle.wrap();
     }
 

@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 public class HandleTest {
 
@@ -40,6 +41,12 @@ public class HandleTest {
         @Override
         public UUID getUniqueIdentifier() {
             return this.uuid;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public HandleWrapper<? extends Handle> wrap() {
+            return mock(HandleWrapper.class);
         }
 
         public String toString() {
@@ -60,6 +67,12 @@ public class HandleTest {
         @Override
         public UUID getUniqueIdentifier() {
             return this.uuid;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public HandleWrapper<? extends Handle> wrap() {
+            return mock(HandleWrapper.class);
         }
 
         public String toString() {
