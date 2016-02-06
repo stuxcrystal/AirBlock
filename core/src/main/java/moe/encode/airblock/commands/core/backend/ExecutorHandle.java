@@ -33,6 +33,13 @@ import java.util.UUID;
 public abstract class ExecutorHandle<T> extends Handle<T> {
 
     /**
+     * The UUID for the Console.<p />
+     *
+     * If the underlying implementation supports a uuid for non-player executors their uuid will be used instead.
+     */
+    public static final UUID DEFAULT_CONSOLE_UUID = UUID.fromString("29c27669-fcfe-4173-a7bb-8c19421a686f");
+
+    /**
      * The basic handle of the executor.
      * @param handle The handle for the executor.
      */

@@ -15,11 +15,6 @@ import java.util.UUID;
 public class BukkitExecutorBackend extends ExecutorHandle<CommandSender> implements Permissions {
 
     /**
-     * The UUID that is for the console.
-     */
-    private static final UUID CONSOLE_UUID = UUID.randomUUID();
-
-    /**
      * The basic handle of the executor.
      *
      * @param handle The handle for the executor.
@@ -62,7 +57,7 @@ public class BukkitExecutorBackend extends ExecutorHandle<CommandSender> impleme
     @Override
     public UUID getUniqueIdentifier() {
         if (this.isConsole())
-            return CONSOLE_UUID;
+            return ExecutorHandle.DEFAULT_CONSOLE_UUID;
         return ((Player)this.getHandle()).getUniqueId();
     }
 

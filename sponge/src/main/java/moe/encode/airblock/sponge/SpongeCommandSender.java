@@ -17,8 +17,6 @@ import java.util.UUID;
  */
 public class SpongeCommandSender extends ExecutorHandle<CommandSource> implements Permissions, LocaleResolver {
 
-    private static final UUID CONSOLE_UUID = UUID.randomUUID();
-
     /**
      * The basic handle of the executor.
      *
@@ -67,7 +65,7 @@ public class SpongeCommandSender extends ExecutorHandle<CommandSource> implement
     @Override
     public UUID getUniqueIdentifier() {
         if (this.isConsole())
-            return SpongeCommandSender.CONSOLE_UUID;
+            return ExecutorHandle.DEFAULT_CONSOLE_UUID;
 
         return ((Player)this.getHandle()).getUniqueId();
     }
