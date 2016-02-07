@@ -14,6 +14,6 @@ public @interface Flag {
      * The flag that should be checked.
      * @return The flag.
      */
-    public char flag() ;
+    public char value() ;
 
 }
