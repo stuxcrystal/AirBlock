@@ -63,7 +63,7 @@ public class SessionManager {
      * @param cls      The type of ths session
      * @return The newly created session.
      */
-    protected <S extends Session> S createSession(Class<S> cls, Handle handle) {
+    protected <S extends Session> S createSession(Class<S> cls, Handle<?> handle) {
 
         S session;
         try {
@@ -91,7 +91,7 @@ public class SessionManager {
      * @return The session-object or null if the creation of the session failed.
      */
     @SuppressWarnings("unchecked")
-    private <S extends Session> S _getSession(Map<Class<? extends Session>, Session> sessions, Class<S> cls, Handle handle) {
+    private <S extends Session> S _getSession(Map<Class<? extends Session>, Session> sessions, Class<S> cls, Handle<?> handle) {
         S result = (S) sessions.get(cls);
         if (result == null || result.isSessionExpired()) {
             result = this.createSession(cls, handle);
@@ -113,7 +113,7 @@ public class SessionManager {
      * @return null if the creation of the session failed.
      */
     @Component(thread = Component.ExecutionThread.SAME_THREAD, strategy = Component.ExecutionStrategy.SYNCHRONIZED_INSTANCE)
-    public <S extends Session> S getSession(Handle handle, Class<S> cls) {
+    public <S extends Session> S getSession(Handle<?> handle, Class<S> cls) {
         this.ensureValidHandle(handle);
         Map<Class<? extends Session>, Session> sessions = this.sessions.get(handle.getUniqueIdentifier());
 

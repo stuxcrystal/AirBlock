@@ -20,6 +20,7 @@ package moe.encode.airblock.commands.core.settings;
 
 import lombok.Data;
 import lombok.NonNull;
+import moe.encode.airblock.commands.Commands;
 import moe.encode.airblock.commands.core.backend.BackendHandle;
 import moe.encode.airblock.commands.core.components.ComponentManager;
 import moe.encode.airblock.commands.core.services.ServiceManager;
@@ -41,27 +42,6 @@ import java.util.logging.Logger;
  */
 @Data
 public class Environment implements CommandSettings {
-
-    /**
-     * Contains the instance of this singleton.
-     */
-    private static Environment INSTANCE;
-
-    /**
-     * Returns the instance of the environment.
-     * @return The instance that has been created.
-     */
-    public static Environment getInstance() {
-        return Environment.INSTANCE;
-    }
-
-    /**
-     * Sets the instance of the environment.
-     * @param environment The instance of the environment.
-     */
-    public static void setInstance(Environment environment) {
-        Environment.INSTANCE = environment;
-    }
 
     /**
      * Contains the argument converter.
@@ -148,6 +128,15 @@ public class Environment implements CommandSettings {
         if (!this.getBackend().hasComponent(Scheduler.class))
             this.registerComponent(Backend.class, new FallbackScheduler(this));
         return this.getBackend().getComponent(Scheduler.class);
+    }
+
+    /**
+     * Returns a new commands object for this environment.
+     * @return A new commands object for this environment.
+     */
+    @Nonnull
+    public Commands createCommands() {
+        return new Commands(this);
     }
 
     @Nonnull

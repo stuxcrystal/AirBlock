@@ -19,6 +19,7 @@
 package moe.encode.airblock.commands.core.backend;
 
 import lombok.*;
+import moe.encode.airblock.commands.core.settings.Environment;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -87,6 +88,6 @@ public abstract class Handle<T> {
      * Adds support for handles.
      * @return The wrapper for the handle.
      */
-    public abstract <W extends HandleWrapper<? extends Handle<T>>> W wrap();
+    public abstract <W extends HandleWrapper<? extends Handle<T>>> W wrap(Environment environment);
 
 }

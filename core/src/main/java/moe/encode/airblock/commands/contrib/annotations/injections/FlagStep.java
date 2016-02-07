@@ -13,6 +13,6 @@ public class FlagStep extends Step {
         Flag flag = getAnnotation(Flag.class, annotations);
         if (flag == null)
             return null;
-        return scope.getArgumentList().hasFlag(flag.flag());
+        return scope.getArgumentList().hasFlag(flag.value());
     }
 }

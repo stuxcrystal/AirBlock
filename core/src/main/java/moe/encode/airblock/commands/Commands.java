@@ -107,15 +107,6 @@ public class Commands implements CommandImplementation {
         this(parent.locale);
     }
 
-    /**
-     * Standard constructor for Commands.
-     */
-    public Commands() {
-        this.commands = new CommandList();
-        this.children = new ArrayList<ChildHandler>();
-        this.locale = new CommandLocale(Environment.getInstance());
-    }
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**

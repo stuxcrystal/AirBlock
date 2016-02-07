@@ -52,14 +52,10 @@ public abstract class ExecutorHandle<T> extends Handle<T> {
      * @param environment The environment that should be used.
      * @return The wrapped executor.
      */
-    public Executor wrap(Environment environment) {
-        return environment.getBackend().wrap(this);
-    }
-
     @Override
     @SuppressWarnings("unchecked")
-    public Executor wrap() {
-        return this.wrap(Environment.getInstance());
+    public Executor wrap(Environment environment) {
+        return environment.getBackend().wrap(this);
     }
 
     /**

@@ -25,8 +25,6 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-
 public class MapValueSourceTest {
 
     private Map<String, String> values = new HashMap<String, String>();

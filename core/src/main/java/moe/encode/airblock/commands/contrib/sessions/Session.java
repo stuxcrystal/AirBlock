@@ -21,7 +21,6 @@ package moe.encode.airblock.commands.contrib.sessions;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
-import moe.encode.airblock.commands.Executor;
 import moe.encode.airblock.commands.core.backend.Handle;
 import moe.encode.airblock.commands.core.backend.HandleWrapper;
 import moe.encode.airblock.commands.core.settings.Environment;
@@ -121,7 +120,7 @@ public abstract class Session<T extends HandleWrapper<?>> {
      */
     @SuppressWarnings("unchecked")
     public T getOwner() {
-        return (T)this.handle.wrap();
+        return (T)this.handle.wrap(this.environment);
     }
 
     /**

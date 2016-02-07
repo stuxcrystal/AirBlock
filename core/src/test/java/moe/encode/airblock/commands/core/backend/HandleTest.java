@@ -18,6 +18,7 @@
 
 package moe.encode.airblock.commands.core.backend;
 
+import moe.encode.airblock.commands.core.settings.Environment;
 import org.junit.Test;
 
 import javax.annotation.Nullable;
@@ -45,7 +46,7 @@ public class HandleTest {
 
         @Override
         @SuppressWarnings("unchecked")
-        public HandleWrapper<? extends Handle> wrap() {
+        public HandleWrapper<? extends Handle> wrap(Environment environment) {
             return mock(HandleWrapper.class);
         }
 
@@ -71,7 +72,7 @@ public class HandleTest {
 
         @Override
         @SuppressWarnings("unchecked")
-        public HandleWrapper<? extends Handle> wrap() {
+        public HandleWrapper<? extends Handle> wrap(Environment environment) {
             return mock(HandleWrapper.class);
         }
 

@@ -140,7 +140,7 @@ public abstract class BackendHandle<T, E> extends Handle<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public final Backend wrap() {
-        return Environment.getInstance().getBackend();
+    public final Backend wrap(Environment environment) {
+        return new Backend(this, environment);
     }
 }

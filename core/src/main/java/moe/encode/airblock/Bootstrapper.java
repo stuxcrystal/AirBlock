@@ -153,7 +153,6 @@ public final class Bootstrapper {
 
         // Prepare the environment.
         Environment environment = Bootstrapper.initializeEnvironment(loader, backendHandle);
-        Environment.setInstance(environment);
         entry.initialize(environment, cl);
         Bootstrapper.INSTANCES.put(loader.value(), new BootstrapperInstance(entry, backendHandle, cl));
     }

@@ -18,7 +18,6 @@
 
 package moe.encode.airblock.commands.contrib.sessions;
 
-import moe.encode.airblock.commands.Executor;
 import moe.encode.airblock.commands.core.backend.Handle;
 import moe.encode.airblock.commands.core.backend.HandleWrapper;
 import moe.encode.airblock.commands.core.settings.Environment;
@@ -57,7 +56,7 @@ public class SessionManagerTest {
 
         @Override
         @SuppressWarnings("unchecked")
-        public HandleWrapper<? extends Handle> wrap() {
+        public HandleWrapper<? extends Handle> wrap(Environment environment) {
             HandleWrapper wrapper = mock(HandleWrapper.class);
             when(wrapper.getHandle()).thenReturn(this);
             return wrapper;
