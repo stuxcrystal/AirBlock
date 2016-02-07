@@ -205,6 +205,17 @@ public final class Bootstrapper {
     }
 
     /**
+     * Allow to retrieve the entry-point.
+     * @param backendEntryPoint   The entry-point.
+     * @param <T>                 The type of the entry point.
+     * @return The entrypoint instance or {@code null} if the entry-point has not been loaded yet.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends EntryPoint> T getEntryPoint(BackendEntryPoint backendEntryPoint) {
+        return (T)Bootstrapper.getData(backendEntryPoint).getEp();
+    }
+
+    /**
      * Called when a user is logging in.
      * @param backendEntryPoint  The backend.
      * @param handle             The handle.

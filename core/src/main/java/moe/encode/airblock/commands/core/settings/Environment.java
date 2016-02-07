@@ -130,6 +130,12 @@ public class Environment implements CommandSettings {
         return this.getBackend().getComponent(Scheduler.class);
     }
 
+    @Nonnull
+    @Override
+    public ExceptionHandlerBag getExceptionHandlers() {
+        return this.handler;
+    }
+
     /**
      * Returns a new commands object for this environment.
      * @return A new commands object for this environment.
@@ -139,9 +145,4 @@ public class Environment implements CommandSettings {
         return new Commands(this);
     }
 
-    @Nonnull
-    @Override
-    public ExceptionHandlerBag getExceptionHandlers() {
-        return this.handler;
-    }
 }
